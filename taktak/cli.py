@@ -6,7 +6,12 @@ from .downloader import download_file, is_valid_url
 def main():
     parser = argparse.ArgumentParser(description='TakTak URL downloader')
     parser.add_argument('url', help='URL to download')
-    parser.add_argument('-o', '--output', default='.', help='Output directory')
+    parser.add_argument(
+        '-o',
+        '--output',
+        default='videos',
+        help='Output directory (default: videos)',
+    )
     args = parser.parse_args()
 
     url = args.url
