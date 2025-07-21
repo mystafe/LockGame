@@ -11,7 +11,7 @@ HTML_FORM = '''
 <h1>Download a URL</h1>
 <form method="post">
     URL: <input type="text" name="url" required><br>
-    Output Directory: <input type="text" name="output" value="." required><br>
+    Output Directory: <input type="text" name="output" value="videos" required><br>
     <input type="submit" value="Download">
 </form>
 {% if message %}
@@ -25,7 +25,7 @@ def index():
     message = ''
     if request.method == 'POST':
         url = request.form.get('url', '')
-        output = request.form.get('output', '.')
+        output = request.form.get('output', 'videos')
         if not is_valid_url(url):
             message = 'Invalid URL'
         else:

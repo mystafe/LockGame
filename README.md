@@ -17,6 +17,9 @@ pip install -r requirements.txt
 python -m taktak <URL> [-o cikti_klasoru]
 ```
 
+Varsayilan cikti klasoru `videos` dizinidir. `-o` parametresi ile baska bir klasor
+belirtebilirsiniz.
+
 Örnek:
 
 ```bash
@@ -41,3 +44,9 @@ python -m taktak.webapp
 
 Uygulama calistiginda tarayicinizdan `http://localhost:5000` adresini ziyaret
 ederek URL ve cikti klasorunu belirtebilirsiniz.
+
+## YouTube Videolari
+
+TakTak artik YouTube baglantilarini da indirebilir. Bir YouTube URL'i verdiginizde
+en yuksek cozumlu MP4 akisi otomatik olarak secilir ve `videos` klasorune
+kaydedilir.
