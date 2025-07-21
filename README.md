@@ -30,3 +30,14 @@ Komut çalıştığında indirme onayı istenir. `y` diyerek indirilen dosyayı 
 ```bash
 python -m unittest discover -s tests
 ```
+
+## Web Arayuzu
+
+Basit bir web formu ile dosya indirmek icin:
+
+```bash
+python -m taktak.webapp
+```
+
+Uygulama calistiginda tarayicinizdan `http://localhost:5000` adresini ziyaret
+ederek URL ve cikti klasorunu belirtebilirsiniz.
