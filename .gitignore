@@ -7,3 +7,7 @@ Input
 temp_frames
 temp_audio
 .DS_Store
+
+# Python
+__pycache__/
+*.pyc
