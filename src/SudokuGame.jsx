@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import pen from './assets/pen.svg'
 import './Sudoku.css'
 
 const data = {
@@ -80,6 +81,7 @@ export default function SudokuGame({ difficulty, onBack }) {
   const [hintsLeft, setHintsLeft] = useState(cfg.hints)
   const [mistakes, setMistakes] = useState(0)
   const [noteMode, setNoteMode] = useState(false)
+  const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const [notes, setNotes] = useState(
     cfg.puzzle.map(row => row.map(() => []))
   )
@@ -87,6 +89,13 @@ export default function SudokuGame({ difficulty, onBack }) {
   const finished = board.every((row, r) =>
     row.every((val, c) => val === cfg.solution[r][c])
   )
+
+  useEffect(() => {
+    if (!noteMode) return
+    const move = e => setMouse({ x: e.clientX, y: e.clientY })
+    window.addEventListener('mousemove', move)
+    return () => window.removeEventListener('mousemove', move)
+  }, [noteMode])
 
   const toggleNote = (r, c, num) => {
     const newNotes = notes.map(row => row.map(n => [...n]))
@@ -171,16 +180,16 @@ export default function SudokuGame({ difficulty, onBack }) {
 
   const autoCalculate = () => {
     const newNotes = notes.map((row, r) =>
-      row.map((cellNotes, c) => {
+      row.map((_, c) => {
         const allowed = getAllowedDigits(r, c)
-        return cellNotes.filter(n => allowed.includes(n))
+        return allowed
       })
     )
     setNotes(newNotes)
   }
 
   return (
-    <div className="sudoku">
+    <div className={`sudoku${noteMode ? ' note-mode' : ''}`}>
       <h1>Sudoku</h1>
       <table className={`board size${cfg.size}`}>
         <tbody>
@@ -226,7 +235,7 @@ export default function SudokuGame({ difficulty, onBack }) {
       </table>
       <div className="controls">
         <button
-          className="note-btn"
+          className={`note-btn${noteMode ? ' active' : ''}`}
           onClick={() => setNoteMode(!noteMode)}
         >
           ✏️
@@ -239,6 +248,14 @@ export default function SudokuGame({ difficulty, onBack }) {
       </div>
       {difficulty === 'hard' && <p>Hata: {mistakes}/{maxMistakes}</p>}
       {finished && <p className="status">Tebrikler!</p>}
+      {noteMode && (
+        <img
+          src={pen}
+          alt="pen"
+          className="pen-cursor"
+          style={{ left: mouse.x + 8, top: mouse.y + 8 }}
+        />
+      )}
     </div>
   )
 }
