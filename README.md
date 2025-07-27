@@ -12,11 +12,10 @@ Tüm rakamlar doğru tahmin edildiğinde veya haklar bittiğinde oyun sona erer 
 
 ## Kurulum
 
-1. Depoyu klonlayın ve dizine girin.
+1. Depoyu klonlayın ve proje dizinine girin.
 2. Gerekli paketleri yüklemek için aşağıdaki komutları çalıştırın:
 
 ```bash
-cd lock-game
 npm install
 ```
 
