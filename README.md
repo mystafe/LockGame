@@ -1,52 +1,40 @@
-# TakTak
+# Kilit Tahmin Oyunu
 
-TakTak, komut satırından herhangi bir URL'i indirmenizi sağlayan basit bir Python aracıdır.
+Bu proje, basit bir sayısal kilit tahmin oyununu React ile sunar. Oyun açıldığında sistem rastgele beş haneli bir şifre belirler. Oyuncu rakamları yukarı/aşağı okları ile değiştirerek tahmin yapar. Toplam deneme hakkı 10'dur.
+
+Her tahmin sonrası sonuçlar renklerle gösterilir:
+
+- **Yeşil:** Rakam doğru ve doğru sırada.
+- **Sarı:** Rakam doğru fakat yanlış sırada.
+- **Kırmızı:** Rakam şifre içinde bulunmuyor.
+
+Tüm rakamlar doğru tahmin edildiğinde veya haklar bittiğinde oyun sona erer ve yeniden başlatma butonu görünür.
 
 ## Kurulum
 
 1. Depoyu klonlayın ve dizine girin.
-2. Gerekli paketleri kurun:
+2. Gerekli paketleri yüklemek için aşağıdaki komutları çalıştırın:
 
 ```bash
-pip install -r requirements.txt
+cd lock-game
+npm install
 ```
 
-## Kullanım
+## Geliştirme Sunucusu
+
+Aşağıdaki komut ile yerel geliştirme sunucusunu başlatabilirsiniz:
 
 ```bash
-python -m taktak <URL> [-o cikti_klasoru]
+npm run dev
 ```
 
-Varsayilan cikti klasoru `videos` dizinidir. `-o` parametresi ile baska bir klasor
-belirtebilirsiniz.
-
-Örnek:
-
-```bash
-python -m taktak https://example.com/dosya.zip -o indirmeler
-```
-
-Komut çalıştığında indirme onayı istenir. `y` diyerek indirilen dosyayı belirtilen dizine kaydedebilirsiniz.
+Sunucu çalıştığında tarayıcınızdan `http://localhost:5173` adresini ziyaret ederek oyunu oynayabilirsiniz.
 
 ## Testler
+
+Python tarafındaki önceki yardımcı kodlar halen `tests` klasöründe yer almaktadır. Testleri çalıştırmak için kök dizinde şu komutu kullanabilirsiniz:
 
 ```bash
 python -m unittest discover -s tests
 ```
 
-## Web Arayuzu
-
-Basit bir web formu ile dosya indirmek icin:
-
-```bash
-python -m taktak.webapp
-```
-
-Uygulama calistiginda tarayicinizdan `http://localhost:5000` adresini ziyaret
-ederek URL ve cikti klasorunu belirtebilirsiniz.
-
-## YouTube Videolari
-
-TakTak artik YouTube baglantilarini da indirebilir. Bir YouTube URL'i verdiginizde
-en yuksek cozumlu MP4 akisi otomatik olarak secilir ve `videos` klasorune
-kaydedilir.
