@@ -1,6 +1,8 @@
-# Kilit Tahmin Oyunu
+# Kilit Tahmin Oyunu ve Sudoku
 
-Bu proje, basit bir sayısal kilit tahmin oyununu React ile sunar. Oyun açıldığında sistem rastgele beş haneli bir şifre belirler. Oyuncu rakamları yukarı/aşağı okları ile değiştirerek tahmin yapar. Toplam deneme hakkı 10'dur.
+Bu proje React ile geliştirilmiş iki farklı oyun içerir: sayısal kilit tahmini ve Sudoku. Kilit oyununda sistem rastgele hanelerden oluşan bir şifre belirler. Oyuncu rakamları yukarı/aşağı okları ile değiştirerek tahmin yapar. Toplam deneme hakkı seçilen zorluğa göre değişir.
+
+Sudoku oyununda üç zorluk seviyesi bulunur. Kolay seviyede 5x5 karelik mini bir Sudoku sunulur ve üç ipucu verilir. Orta seviyede 9x9 standart Sudoku daha fazla açık sayıyla gelir ve yine üç ipucu sağlanır. Zor seviyede 9x9 Sudoku daha az açık sayı içerir, üç yanılma hakkı ve tek ipucu vardır.
 
 Her tahmin sonrası sonuçlar renklerle gösterilir:
 
