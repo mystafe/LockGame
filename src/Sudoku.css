@@ -24,6 +24,7 @@
   width: 3rem;
   height: 3rem;
   text-align: center;
+  color: #000;
   position: relative;
 }
 .board input {
@@ -32,6 +33,8 @@
   text-align: center;
   border: none;
   font-size: 1.5rem;
+  background: transparent;
+  color: inherit;
 }
 .prefilled {
   font-weight: bold;
@@ -101,25 +104,32 @@
   }
 }
 
-.block0 { background: #fdf5e6; }
-.block1 { background: #eef7fd; }
-.block2 { background: #f0f9ef; }
-.block3 { background: #f3e8fd; }
-.block4 { background: #fffbe6; }
-.block5 { background: #e8f7f9; }
-.block6 { background: #fef0f0; }
-.block7 { background: #e9f0fe; }
-.block8 { background: #f0ffe6; }
+.block0,
+.block2,
+.block4,
+.block6,
+.block8 {
+  background: #ffd700;
+  color: #000;
+}
+
+.block1,
+.block3,
+.block5,
+.block7 {
+  background: #a32638;
+  color: #fff;
+}
 
 @media (prefers-color-scheme: dark) {
   .board td {
     border-color: #555;
   }
   .board input {
-    background: #222;
-    color: #eee;
+    background: transparent;
+    color: inherit;
   }
   .prefilled {
-    color: #fff;
+    color: inherit;
   }
 }
