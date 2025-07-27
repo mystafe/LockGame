@@ -30,11 +30,3 @@ npm run dev
 
 Sunucu çalıştığında tarayıcınızdan `http://localhost:5173` adresini ziyaret ederek oyunu oynayabilirsiniz.
 
-## Testler
-
-Python tarafındaki önceki yardımcı kodlar halen `tests` klasöründe yer almaktadır. Testleri çalıştırmak için kök dizinde şu komutu kullanabilirsiniz:
-
-```bash
-python -m unittest discover -s tests
-```
-
