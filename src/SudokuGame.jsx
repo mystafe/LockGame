@@ -85,6 +85,7 @@ export default function SudokuGame({ difficulty, onBack }) {
   const [notes, setNotes] = useState(
     cfg.puzzle.map(row => row.map(() => []))
   )
+  const [activeCell, setActiveCell] = useState(null)
   const maxMistakes = difficulty === 'hard' ? 3 : Infinity
   const finished = board.every((row, r) =>
     row.every((val, c) => val === cfg.solution[r][c])
@@ -178,18 +179,31 @@ export default function SudokuGame({ difficulty, onBack }) {
     return digits.filter(d => !used.has(d))
   }
 
-  const autoCalculate = () => {
+  const fixAllNotes = () => {
     const newNotes = notes.map((row, r) =>
-      row.map((_, c) => {
-        const allowed = getAllowedDigits(r, c)
-        return allowed
-      })
+      row.map((_, c) => getAllowedDigits(r, c))
     )
     setNotes(newNotes)
   }
 
+  const fixCurrentNote = () => {
+    if (!activeCell) return
+    const { r, c } = activeCell
+    const allowed = getAllowedDigits(r, c)
+    const newNotes = notes.map(row => row.map(n => [...n]))
+    newNotes[r][c] = allowed
+    setNotes(newNotes)
+  }
+
+  const restartGame = () => {
+    setBoard(cfg.puzzle.map(r => [...r]))
+    setNotes(cfg.puzzle.map(row => row.map(() => [])))
+    setHintsLeft(cfg.hints)
+    setMistakes(0)
+  }
+
   return (
-    <div className={`sudoku${noteMode ? ' note-mode' : ''}`}>
+    <div className={`sudoku${noteMode ? ' note-mode' : ''}${finished ? ' finished' : ''}`}>
       <h1>Sudoku</h1>
       <table className={`board size${cfg.size}`}>
         <tbody>
@@ -211,6 +225,7 @@ export default function SudokuGame({ difficulty, onBack }) {
                         <input
                           value={cell === 0 ? '' : cell}
                           onChange={e => handleChange(r, c, e.target.value)}
+                          onFocus={() => setActiveCell({ r, c })}
                         />
                         {notes[r][c].length > 0 && (
                           <div className="note-cell readonly">
@@ -240,7 +255,8 @@ export default function SudokuGame({ difficulty, onBack }) {
         >
           ✏️
         </button>
-        <button onClick={autoCalculate}>Otomatik</button>
+        <button onClick={fixCurrentNote}>Notu Düzelt</button>
+        <button onClick={fixAllNotes}>Notları Düzelt</button>
         <button onClick={giveHint} disabled={hintsLeft <= 0}>
           Ipucu ({hintsLeft})
         </button>
@@ -248,6 +264,12 @@ export default function SudokuGame({ difficulty, onBack }) {
       </div>
       {difficulty === 'hard' && <p>Hata: {mistakes}/{maxMistakes}</p>}
       {finished && <p className="status">Tebrikler!</p>}
+      {finished && (
+        <div className="end-controls">
+          <button onClick={restartGame}>Yeniden Başla</button>
+          <button onClick={onBack}>Ana Sayfa</button>
+        </div>
+      )}
       {noteMode && (
         <img
           src={pen}

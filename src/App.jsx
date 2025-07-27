@@ -30,10 +30,10 @@ function DigitWheel({ value, onChange, disabled }) {
 
 export default function App() {
   const [screen, setScreen] = useState('start')
-  const [gameType, setGameType] = useState('lock') // lock or sudoku
+  const [gameType, setGameType] = useState('sudoku') // lock or sudoku
   const [mode, setMode] = useState('easy') // 'easy' or 'challenge'
   const [difficulty, setDifficulty] = useState('easy') // lock difficulty
-  const [sudokuDifficulty, setSudokuDifficulty] = useState('easy')
+  const [sudokuDifficulty, setSudokuDifficulty] = useState('hard')
 
   const [codeLength, setCodeLength] = useState(4)
   const [maxAttempts, setMaxAttempts] = useState(10)
@@ -149,8 +149,8 @@ export default function App() {
           <div>
             <label>Oyun: </label>
             <select value={gameType} onChange={(e) => setGameType(e.target.value)}>
-              <option value="lock">Lock Game</option>
               <option value="sudoku">Sudoku</option>
+              <option value="lock">Lock Game</option>
             </select>
           </div>
           {gameType === 'lock' && (
@@ -176,9 +176,9 @@ export default function App() {
             <div>
               <label>Zorluk: </label>
               <select value={sudokuDifficulty} onChange={(e) => setSudokuDifficulty(e.target.value)}>
-                <option value="easy">5x5 Kolay</option>
-                <option value="medium">9x9 Orta</option>
                 <option value="hard">9x9 Zor</option>
+                <option value="medium">9x9 Orta</option>
+                <option value="easy">5x5 Kolay</option>
               </select>
             </div>
           )}
