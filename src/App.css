@@ -52,6 +52,8 @@
 .options select,
 .options button {
   padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 @media (min-width: 1024px) {
@@ -69,6 +71,11 @@
   opacity: 0.5;
   font-size: 0.8rem;
   margin-top: 2rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
 }
 
 @media (max-width: 600px) {
