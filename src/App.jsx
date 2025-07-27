@@ -184,7 +184,7 @@ export default function App() {
           )}
           <button onClick={startGame}>Başla</button>
         </div>
-        <footer className="footer">Mustafa Evleksiz Tarafından geliştirilmiştir v{version}</footer>
+        <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
       </div>
     )
   }
@@ -192,7 +192,7 @@ export default function App() {
   if (screen === 'sudoku') {
     return (
       <div className="app">
-        <SudokuGame difficulty={sudokuDifficulty} onBack={handleRestart} />
+        <SudokuGame difficulty={sudokuDifficulty} version={version} onBack={handleRestart} />
       </div>
     )
   }
@@ -230,7 +230,7 @@ export default function App() {
           </div>
         ))}
       </div>
-      <footer className="footer">Mustafa Evleksiz Tarafından geliştirilmiştir v{version}</footer>
+      <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
     </div>
     )
   }
