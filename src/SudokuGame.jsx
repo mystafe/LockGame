@@ -170,6 +170,9 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     const [r, c] = empties[Math.floor(Math.random() * empties.length)]
     const newBoard = board.map(row => [...row])
     newBoard[r][c] = rand.solution[r][c]
+    const newPuzzle = rand.puzzle.map(row => [...row])
+    newPuzzle[r][c] = rand.solution[r][c]
+    setRand({ ...rand, puzzle: newPuzzle })
     const newNotes = notes.map(row => row.map(n => [...n]))
     newNotes[r][c] = []
     setNotes(newNotes)
@@ -189,6 +192,9 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     const [r, c] = empties[Math.floor(Math.random() * empties.length)]
     const newBoard = board.map(row => [...row])
     newBoard[r][c] = rand.solution[r][c]
+    const newPuzzle = rand.puzzle.map(row => [...row])
+    newPuzzle[r][c] = rand.solution[r][c]
+    setRand({ ...rand, puzzle: newPuzzle })
     const newNotes = notes.map(row => row.map(n => [...n]))
     newNotes[r][c] = []
     setNotes(newNotes)
@@ -265,37 +271,38 @@ export default function SudokuGame({ difficulty, onBack, version }) {
                     key={c}
                     className={`${rand.puzzle[r][c] !== 0 ? 'prefilled ' : ''}${block}${activeCell && activeCell.r === r && activeCell.c === c ? ' active-cell' : ''}`.trim()}
                   >
-                    {rand.puzzle[r][c] !== 0 ? (
-                      rand.puzzle[r][c]
-                    ) : (
-                      <>
-                          <input
-                            value={cell === 0 ? '' : cell}
-                          readOnly
-                          onFocus={() => setActiveCell({ r, c })}
-                          onBlur={() => setActiveCell(null)}
-                          onKeyDown={e => {
-                            const n = parseInt(e.key, 10)
-                            if (!isNaN(n)) {
-                              handleChange(r, c, n)
-                            } else if (e.key === 'Backspace' || e.key === 'Delete') {
-                              handleChange(r, c, '')
-                            }
-                          }}
-                          />
-                        {notes[r][c].length > 0 && (
-                          <div className="note-cell readonly">
-                            {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
-                              <span
-                                key={n}
-                                className={notes[r][c].includes(n) ? 'active' : ''}
-                              >
-                                {n}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </>
+                    <input
+                      value={cell === 0 ? '' : cell}
+                      readOnly
+                      disabled={rand.puzzle[r][c] !== 0}
+                      inputMode="none"
+                      onFocus={() => setActiveCell({ r, c })}
+                      onBlur={e => {
+                        const next = e.relatedTarget
+                        if (!next || !next.closest('.digit-pad')) {
+                          setActiveCell(null)
+                        }
+                      }}
+                      onKeyDown={e => {
+                        const n = parseInt(e.key, 10)
+                        if (!isNaN(n)) {
+                          handleChange(r, c, n)
+                        } else if (e.key === 'Backspace' || e.key === 'Delete') {
+                          handleChange(r, c, '')
+                        }
+                      }}
+                    />
+                    {notes[r][c].length > 0 && (
+                      <div className="note-cell readonly">
+                        {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
+                          <span
+                            key={n}
+                            className={notes[r][c].includes(n) ? 'active' : ''}
+                          >
+                            {n}
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </td>
                 )
@@ -307,9 +314,20 @@ export default function SudokuGame({ difficulty, onBack, version }) {
       {activeCell && (
         <div className="digit-pad">
           {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
-            <button key={n} onClick={() => handleChange(activeCell.r, activeCell.c, n)}>{n}</button>
+            <button
+              key={n}
+              onPointerDown={e => e.preventDefault()}
+              onClick={() => handleChange(activeCell.r, activeCell.c, n)}
+            >
+              {n}
+            </button>
           ))}
-          <button onClick={() => handleChange(activeCell.r, activeCell.c, '')}>X</button>
+          <button
+            onPointerDown={e => e.preventDefault()}
+            onClick={() => handleChange(activeCell.r, activeCell.c, '')}
+          >
+            X
+          </button>
         </div>
       )}
       <div className="controls">
