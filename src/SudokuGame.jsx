@@ -330,7 +330,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
             onPointerDown={e => e.preventDefault()}
             onClick={() => handleChange(activeCell.r, activeCell.c, '')}
           >
-            X
+            {'<'}
           </button>
         </div>
       )}
