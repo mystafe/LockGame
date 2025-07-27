@@ -110,3 +110,16 @@
     width: 2rem;
   }
 }
+
+@media (min-width: 1024px) {
+  .digit-display {
+    font-size: 4rem;
+  }
+  .digit {
+    font-size: 3rem;
+    width: 3rem;
+  }
+  .wheel button {
+    width: 3rem;
+  }
+}

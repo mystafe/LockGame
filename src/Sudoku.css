@@ -32,3 +32,17 @@
   margin-top: 0.5rem;
   font-weight: bold;
 }
+
+@media (prefers-color-scheme: dark) {
+  .board td {
+    border-color: #555;
+  }
+  .board input {
+    background: #222;
+    color: #eee;
+  }
+  .prefilled {
+    background: #444;
+    color: #fff;
+  }
+}
