@@ -37,6 +37,10 @@
   color: inherit;
   outline: none;
 }
+.board input:disabled {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+}
 .prefilled {
   font-weight: bold;
 }
@@ -91,12 +95,22 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
   padding: 0.5rem;
   z-index: 500;
 }
 .digit-pad button {
   width: 2.5rem;
   height: 2.5rem;
+}
+.digit-pad button:disabled {
+  opacity: 0.5;
+}
+
+@media (min-width: 768px) {
+  .digit-pad {
+    display: none;
+  }
 }
 .controls {
   margin-top: 0.5rem;
@@ -159,7 +173,7 @@
 .block4,
 .block6,
 .block8 {
-  background: #ffd700;
+  background: #fdb912;
   color: #000;
 }
 
@@ -167,7 +181,7 @@
 .block3,
 .block5,
 .block7 {
-  background: #a32638;
+  background: #a90432;
   color: #fff;
 }
 
