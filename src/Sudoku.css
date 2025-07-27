@@ -8,10 +8,16 @@
   margin: 1rem auto;
 }
 .board.size9 td:nth-child(3n) {
-  border-right: 2px solid #333;
+  border-right: 3px solid #333;
 }
 .board.size9 tr:nth-child(3n) td {
-  border-bottom: 2px solid #333;
+  border-bottom: 3px solid #333;
+}
+.board.size9 td:first-child {
+  border-left: 3px solid #333;
+}
+.board.size9 tr:first-child td {
+  border-top: 3px solid #333;
 }
 .board td {
   border: 1px solid #333;
@@ -28,7 +34,7 @@
   font-size: 1.5rem;
 }
 .prefilled {
-  background: #eee;
+  font-weight: bold;
 }
 .note-cell {
   display: grid;
@@ -58,6 +64,9 @@
   background: red;
   color: white;
 }
+.note-btn.active {
+  background: darkred;
+}
 .controls {
   margin-top: 0.5rem;
   display: flex;
@@ -67,6 +76,19 @@
 .status {
   margin-top: 0.5rem;
   font-weight: bold;
+}
+
+.note-mode {
+  cursor: none;
+}
+
+.pen-cursor {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
 }
 
 @media (min-width: 1024px) {
@@ -98,7 +120,6 @@
     color: #eee;
   }
   .prefilled {
-    background: #444;
     color: #fff;
   }
 }
