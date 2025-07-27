@@ -79,13 +79,40 @@ export default function SudokuGame({ difficulty, onBack }) {
   const [board, setBoard] = useState(cfg.puzzle.map(r => [...r]))
   const [hintsLeft, setHintsLeft] = useState(cfg.hints)
   const [mistakes, setMistakes] = useState(0)
+  const [noteMode, setNoteMode] = useState(false)
+  const [notes, setNotes] = useState(
+    cfg.puzzle.map(row => row.map(() => []))
+  )
   const maxMistakes = difficulty === 'hard' ? 3 : Infinity
   const finished = board.every((row, r) =>
     row.every((val, c) => val === cfg.solution[r][c])
   )
 
+  const toggleNote = (r, c, num) => {
+    const newNotes = notes.map(row => row.map(n => [...n]))
+    const cell = newNotes[r][c]
+    if (cell.includes(num)) {
+      newNotes[r][c] = cell.filter(n => n !== num)
+    } else {
+      newNotes[r][c] = [...cell, num].sort((a, b) => a - b)
+    }
+    setNotes(newNotes)
+  }
+
   const handleChange = (r, c, val) => {
     if (cfg.puzzle[r][c] !== 0 || finished) return
+    if (noteMode) {
+      const num = parseInt(val, 10)
+      if (!num || num < 1 || num > cfg.size) return
+      toggleNote(r, c, num)
+      return
+    }
+    if (val === '') {
+      const newBoard = board.map(row => [...row])
+      newBoard[r][c] = 0
+      setBoard(newBoard)
+      return
+    }
     const num = parseInt(val, 10)
     if (!num || num < 1 || num > cfg.size) return
     const newBoard = board.map(row => [...row])
@@ -101,6 +128,9 @@ export default function SudokuGame({ difficulty, onBack }) {
         }
       }
     }
+    const newNotes = notes.map(row => row.map(n => [...n]))
+    newNotes[r][c] = []
+    setNotes(newNotes)
     setBoard(newBoard)
   }
 
@@ -120,10 +150,39 @@ export default function SudokuGame({ difficulty, onBack }) {
     setHintsLeft(hintsLeft - 1)
   }
 
+  const getAllowedDigits = (r, c) => {
+    if (board[r][c] !== 0 || cfg.puzzle[r][c] !== 0) return []
+    const digits = Array.from({ length: cfg.size }, (_, i) => i + 1)
+    const used = new Set()
+    for (let i = 0; i < cfg.size; i++) {
+      used.add(board[r][i] || cfg.puzzle[r][i])
+      used.add(board[i][c] || cfg.puzzle[i][c])
+    }
+    const block = cfg.size === 9 ? 3 : Math.floor(Math.sqrt(cfg.size))
+    const br = Math.floor(r / block) * block
+    const bc = Math.floor(c / block) * block
+    for (let rr = br; rr < br + block; rr++) {
+      for (let cc = bc; cc < bc + block; cc++) {
+        used.add(board[rr][cc] || cfg.puzzle[rr][cc])
+      }
+    }
+    return digits.filter(d => !used.has(d))
+  }
+
+  const autoCalculate = () => {
+    const newNotes = notes.map((row, r) =>
+      row.map((cellNotes, c) => {
+        const allowed = getAllowedDigits(r, c)
+        return cellNotes.filter(n => allowed.includes(n))
+      })
+    )
+    setNotes(newNotes)
+  }
+
   return (
     <div className="sudoku">
       <h1>Sudoku</h1>
-      <table className="board">
+      <table className={`board size${cfg.size}`}>
         <tbody>
           {board.map((row, r) => (
             <tr key={r}>
@@ -131,11 +190,37 @@ export default function SudokuGame({ difficulty, onBack }) {
                 <td key={c} className={cfg.puzzle[r][c] !== 0 ? 'prefilled' : ''}>
                   {cfg.puzzle[r][c] !== 0 ? (
                     cfg.puzzle[r][c]
+                  ) : noteMode ? (
+                    <div className="note-cell">
+                      {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
+                        <span
+                          key={n}
+                          className={notes[r][c].includes(n) ? 'active' : ''}
+                          onClick={() => toggleNote(r, c, n)}
+                        >
+                          {n}
+                        </span>
+                      ))}
+                    </div>
                   ) : (
-                    <input
-                      value={cell === 0 ? '' : cell}
-                      onChange={e => handleChange(r, c, e.target.value)}
-                    />
+                    <>
+                      <input
+                        value={cell === 0 ? '' : cell}
+                        onChange={e => handleChange(r, c, e.target.value)}
+                      />
+                      {cell === 0 && notes[r][c].length > 0 && (
+                        <div className="note-cell readonly">
+                          {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
+                            <span
+                              key={n}
+                              className={notes[r][c].includes(n) ? 'active' : ''}
+                            >
+                              {n}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   )}
                 </td>
               ))}
@@ -144,7 +229,16 @@ export default function SudokuGame({ difficulty, onBack }) {
         </tbody>
       </table>
       <div className="controls">
-        <button onClick={giveHint} disabled={hintsLeft <= 0}>Ipucu ({hintsLeft})</button>
+        <button
+          className="note-btn"
+          onClick={() => setNoteMode(!noteMode)}
+        >
+          ✏️
+        </button>
+        <button onClick={autoCalculate}>Otomatik</button>
+        <button onClick={giveHint} disabled={hintsLeft <= 0}>
+          Ipucu ({hintsLeft})
+        </button>
         <button onClick={onBack}>Ana Sayfa</button>
       </div>
       {difficulty === 'hard' && <p>Hata: {mistakes}/{maxMistakes}</p>}
