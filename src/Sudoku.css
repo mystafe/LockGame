@@ -55,13 +55,18 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  opacity: 0.2;
 }
 .note-cell.readonly span {
   cursor: default;
-  opacity: 0.6;
+  opacity: 0.2;
+}
+.note-cell.readonly {
+  pointer-events: none;
 }
 .note-cell span.active {
-  color: red;
+  color: #2196f3;
+  opacity: 1;
 }
 .note-btn {
   background: red;
@@ -76,9 +81,27 @@
   justify-content: center;
   gap: 0.5rem;
 }
+
+.end-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
 .status {
   margin-top: 0.5rem;
   font-weight: bold;
+}
+
+.finished .board {
+  opacity: 0.6;
+  animation: winflash 0.5s ease-in-out;
+}
+
+@keyframes winflash {
+  from { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  to { transform: scale(1); }
 }
 
 .note-mode {
@@ -101,6 +124,10 @@
   }
   .board input {
     font-size: 2rem;
+  }
+  .controls button,
+  .end-controls button {
+    font-size: 1.25rem;
   }
 }
 
