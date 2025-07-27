@@ -186,44 +186,40 @@ export default function SudokuGame({ difficulty, onBack }) {
         <tbody>
           {board.map((row, r) => (
             <tr key={r}>
-              {row.map((cell, c) => (
-                <td key={c} className={cfg.puzzle[r][c] !== 0 ? 'prefilled' : ''}>
-                  {cfg.puzzle[r][c] !== 0 ? (
-                    cfg.puzzle[r][c]
-                  ) : noteMode ? (
-                    <div className="note-cell">
-                      {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
-                        <span
-                          key={n}
-                          className={notes[r][c].includes(n) ? 'active' : ''}
-                          onClick={() => toggleNote(r, c, n)}
-                        >
-                          {n}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <>
-                      <input
-                        value={cell === 0 ? '' : cell}
-                        onChange={e => handleChange(r, c, e.target.value)}
-                      />
-                      {cell === 0 && notes[r][c].length > 0 && (
-                        <div className="note-cell readonly">
-                          {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
-                            <span
-                              key={n}
-                              className={notes[r][c].includes(n) ? 'active' : ''}
-                            >
-                              {n}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </td>
-              ))}
+              {row.map((cell, c) => {
+                const block = cfg.size === 9
+                  ? `block${Math.floor(r / 3) * 3 + Math.floor(c / 3)}`
+                  : ''
+                return (
+                  <td
+                    key={c}
+                    className={`${cfg.puzzle[r][c] !== 0 ? 'prefilled ' : ''}${block}`.trim()}
+                  >
+                    {cfg.puzzle[r][c] !== 0 ? (
+                      cfg.puzzle[r][c]
+                    ) : (
+                      <>
+                        <input
+                          value={cell === 0 ? '' : cell}
+                          onChange={e => handleChange(r, c, e.target.value)}
+                        />
+                        {notes[r][c].length > 0 && (
+                          <div className="note-cell readonly">
+                            {Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
+                              <span
+                                key={n}
+                                className={notes[r][c].includes(n) ? 'active' : ''}
+                              >
+                                {n}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </td>
+                )
+              })}
             </tr>
           ))}
         </tbody>
