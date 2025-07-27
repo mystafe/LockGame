@@ -123,6 +123,44 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     setNotes(newNotes)
   }
 
+  const removeNotesForNumber = (r, c, num, baseNotes) => {
+    const updated = baseNotes.map(row => row.map(n => [...n]))
+    for (let i = 0; i < cfg.size; i++) {
+      if (i !== c) updated[r][i] = updated[r][i].filter(n => n !== num)
+      if (i !== r) updated[i][c] = updated[i][c].filter(n => n !== num)
+    }
+    const block = cfg.size === 9 ? 3 : Math.floor(Math.sqrt(cfg.size))
+    const br = Math.floor(r / block) * block
+    const bc = Math.floor(c / block) * block
+    for (let rr = br; rr < br + block; rr++) {
+      for (let cc = bc; cc < bc + block; cc++) {
+        if (rr !== r || cc !== c) {
+          updated[rr][cc] = updated[rr][cc].filter(n => n !== num)
+        }
+      }
+    }
+    return updated
+  }
+
+  const focusNextCell = (r, c, b) => {
+    let rr = r
+    let cc = c
+    for (let step = 0; step < cfg.size * cfg.size; step++) {
+      cc++
+      if (cc >= cfg.size) {
+        cc = 0
+        rr = (rr + 1) % cfg.size
+      }
+      if (rand.puzzle[rr][cc] === 0 && b[rr][cc] === 0) {
+        const el = document.querySelector(`input[data-pos='${rr}-${cc}']`)
+        if (el) el.focus()
+        setActiveCell({ r: rr, c: cc })
+        return
+      }
+    }
+    setActiveCell(null)
+  }
+
   const handleChange = (r, c, val) => {
     if (rand.puzzle[r][c] !== 0 || finished) return
     if (noteMode) {
@@ -152,10 +190,12 @@ export default function SudokuGame({ difficulty, onBack, version }) {
         }
       }
     }
-    const newNotes = notes.map(row => row.map(n => [...n]))
+    let newNotes = notes.map(row => row.map(n => [...n]))
     newNotes[r][c] = []
+    newNotes = removeNotesForNumber(r, c, num, newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
+    focusNextCell(r, c, newBoard)
   }
 
   const giveHint = () => {
@@ -173,8 +213,9 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     const newPuzzle = rand.puzzle.map(row => [...row])
     newPuzzle[r][c] = rand.solution[r][c]
     setRand({ ...rand, puzzle: newPuzzle })
-    const newNotes = notes.map(row => row.map(n => [...n]))
+    let newNotes = notes.map(row => row.map(n => [...n]))
     newNotes[r][c] = []
+    newNotes = removeNotesForNumber(r, c, rand.solution[r][c], newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
     setHintsLeft(hintsLeft - 1)
@@ -195,8 +236,9 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     const newPuzzle = rand.puzzle.map(row => [...row])
     newPuzzle[r][c] = rand.solution[r][c]
     setRand({ ...rand, puzzle: newPuzzle })
-    const newNotes = notes.map(row => row.map(n => [...n]))
+    let newNotes = notes.map(row => row.map(n => [...n]))
     newNotes[r][c] = []
+    newNotes = removeNotesForNumber(r, c, rand.solution[r][c], newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
   }
@@ -258,6 +300,9 @@ export default function SudokuGame({ difficulty, onBack, version }) {
   return (
     <div className={`sudoku${noteMode ? ' note-mode' : ''}${finished ? ' finished' : ''}`}>
       <h1 onClick={handleHeaderClick}>Sudoku</h1>
+      {difficulty === 'hard' && (
+        <p className="mistakes">Hata: {mistakes}/{maxMistakes}</p>
+      )}
       <table className={`board size${cfg.size}`}>
         <tbody>
           {board.map((row, r) => (
@@ -272,6 +317,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
                     className={`${rand.puzzle[r][c] !== 0 ? 'prefilled ' : ''}${block}${activeCell && activeCell.r === r && activeCell.c === c ? ' active-cell' : ''}`.trim()}
                   >
                     <input
+                      data-pos={`${r}-${c}`}
                       value={cell === 0 ? '' : cell}
                       readOnly
                       disabled={rand.puzzle[r][c] !== 0}
@@ -348,7 +394,6 @@ export default function SudokuGame({ difficulty, onBack, version }) {
         </button>
         <button onClick={onBack}>Ana Sayfa</button>
       </div>
-      {difficulty === 'hard' && <p>Hata: {mistakes}/{maxMistakes}</p>}
       {finished && <p className="status">Tebrikler!</p>}
       {finished && (
         <div className="end-controls">

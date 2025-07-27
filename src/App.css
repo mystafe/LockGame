@@ -78,6 +78,11 @@
   text-align: center;
 }
 
+.sudoku-app {
+  justify-content: flex-start;
+  padding-top: 1rem;
+}
+
 @media (max-width: 600px) {
   .wheels {
     flex-wrap: wrap;

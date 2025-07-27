@@ -191,7 +191,7 @@ export default function App() {
 
   if (screen === 'sudoku') {
     return (
-      <div className="app">
+      <div className="app sudoku-app">
         <SudokuGame difficulty={sudokuDifficulty} version={version} onBack={handleRestart} />
       </div>
     )
