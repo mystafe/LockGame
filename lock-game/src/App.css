@@ -25,6 +25,35 @@
   font-size: 2rem;
   padding: 0.5rem;
   width: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.wheel.spin .digit-display {
+  transform: rotateX(360deg);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.attempt-text {
+  font-size: 1rem;
+}
+
+.footer {
+  opacity: 0.5;
+  font-size: 0.8rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 600px) {
+  .wheels {
+    flex-wrap: wrap;
+  }
 }
 
 .history {

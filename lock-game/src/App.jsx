@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function generateSecret(length) {
@@ -6,10 +6,18 @@ function generateSecret(length) {
 }
 
 function DigitWheel({ value, onChange, disabled }) {
+  const [spin, setSpin] = useState(false)
   const inc = () => !disabled && onChange((value + 1) % 10)
   const dec = () => !disabled && onChange((value + 9) % 10)
+
+  useEffect(() => {
+    setSpin(true)
+    const t = setTimeout(() => setSpin(false), 300)
+    return () => clearTimeout(t)
+  }, [value])
+
   return (
-    <div className="wheel">
+    <div className={`wheel ${spin ? 'spin' : ''}`}>
       <button onClick={inc} disabled={disabled}>▲</button>
       <div className="digit-display">{value}</div>
       <button onClick={dec} disabled={disabled}>▼</button>
@@ -18,14 +26,32 @@ function DigitWheel({ value, onChange, disabled }) {
 }
 
 export default function App() {
-  const codeLength = 5
-  const maxAttempts = 10
-  const [secret, setSecret] = useState(() => generateSecret(codeLength))
-  const [guess, setGuess] = useState(Array(codeLength).fill(0))
+  const [screen, setScreen] = useState('start')
+  const [mode, setMode] = useState('easy') // 'easy' or 'challenge'
+  const [difficulty, setDifficulty] = useState('easy') // easy, medium, hard
+
+  const [codeLength, setCodeLength] = useState(4)
+  const [maxAttempts, setMaxAttempts] = useState(10)
+  const [secret, setSecret] = useState([])
+  const [guess, setGuess] = useState([])
   const [attempts, setAttempts] = useState([])
   const [status, setStatus] = useState('')
 
   const finished = status !== ''
+
+  const startGame = () => {
+    const lengths = { easy: 4, medium: 5, hard: 6 }
+    const attemptsMap = { easy: 10, medium: 8, hard: 6 }
+    const len = lengths[difficulty]
+    const att = attemptsMap[difficulty]
+    setCodeLength(len)
+    setMaxAttempts(att)
+    setSecret(generateSecret(len))
+    setGuess(Array(len).fill(0))
+    setAttempts([])
+    setStatus('')
+    setScreen('play')
+  }
 
   const handleChange = (index, val) => {
     const g = [...guess]
@@ -33,7 +59,7 @@ export default function App() {
     setGuess(g)
   }
 
-  const evaluate = (g) => {
+  const evaluateColors = (g) => {
     const colors = Array(codeLength).fill('red')
     const secretCopy = [...secret]
     for (let i = 0; i < codeLength; i++) {
@@ -53,16 +79,52 @@ export default function App() {
     return colors
   }
 
+  const evaluateCounts = (g) => {
+    let correct = 0
+    let misplaced = 0
+    let wrong = 0
+    const secretCopy = [...secret]
+    for (let i = 0; i < codeLength; i++) {
+      if (g[i] === secretCopy[i]) {
+        correct++
+        secretCopy[i] = null
+      }
+    }
+    for (let i = 0; i < codeLength; i++) {
+      if (g[i] === secret[i]) continue
+      const idx = secretCopy.indexOf(g[i])
+      if (idx !== -1) {
+        misplaced++
+        secretCopy[idx] = null
+      } else {
+        wrong++
+      }
+    }
+    return { correct, misplaced, wrong }
+  }
+
   const handleSubmit = () => {
     if (finished) return
-    const colors = evaluate(guess)
-    const newAttempt = { digits: [...guess], colors }
-    const newAttempts = [...attempts, newAttempt]
-    setAttempts(newAttempts)
-    if (colors.every((c) => c === 'green')) {
-      setStatus('Tebrikler! Şifre doğru.')
-    } else if (newAttempts.length >= maxAttempts) {
-      setStatus('Deneme hakkınız bitti. Şifre: ' + secret.join(''))
+    if (mode === 'easy') {
+      const colors = evaluateColors(guess)
+      const newAttempt = { digits: [...guess], colors }
+      const newAttempts = [...attempts, newAttempt]
+      setAttempts(newAttempts)
+      if (colors.every((c) => c === 'green')) {
+        setStatus('Tebrikler! Şifre doğru.')
+      } else if (newAttempts.length >= maxAttempts) {
+        setStatus('Deneme hakkınız bitti. Şifre: ' + secret.join(''))
+      }
+    } else {
+      const result = evaluateCounts(guess)
+      const newAttempt = { digits: [...guess], result }
+      const newAttempts = [...attempts, newAttempt]
+      setAttempts(newAttempts)
+      if (result.correct === codeLength) {
+        setStatus('Tebrikler! Şifre doğru.')
+      } else if (newAttempts.length >= maxAttempts) {
+        setStatus('Deneme hakkınız bitti. Şifre: ' + secret.join(''))
+      }
     }
   }
 
@@ -73,10 +135,37 @@ export default function App() {
     setStatus('')
   }
 
-  return (
-    <div className="app">
-      <h1>Kilit Tahmin Oyunu</h1>
-      <div className="wheels">
+  if (screen === 'start') {
+    return (
+      <div className="app">
+        <h1>Lock Game</h1>
+        <div className="options">
+          <div>
+            <label>Mod: </label>
+            <select value={mode} onChange={(e) => setMode(e.target.value)}>
+              <option value="easy">Lock Game Easy</option>
+              <option value="challenge">Lock Game Challenge</option>
+            </select>
+          </div>
+          <div>
+            <label>Zorluk: </label>
+            <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+              <option value="easy">Kolay (4 hane, 10 hak)</option>
+              <option value="medium">Orta (5 hane, 8 hak)</option>
+              <option value="hard">Zor (6 hane, 6 hak)</option>
+            </select>
+          </div>
+          <button onClick={startGame}>Başla</button>
+        </div>
+        <footer className="footer">Mustafa Evleksiz Tarafından geliştirilmiştir</footer>
+      </div>
+    )
+  }
+
+    return (
+      <div className="app">
+        <h1>{mode === 'easy' ? 'Lock Game Easy' : 'Lock Game Challenge'}</h1>
+        <div className="wheels">
         {guess.map((d, i) => (
           <DigitWheel
             key={i}
@@ -93,12 +182,20 @@ export default function App() {
       <div className="history">
         {attempts.map((a, idx) => (
           <div key={idx} className="attempt">
-            {a.digits.map((d, i) => (
-              <span key={i} className={`digit ${a.colors[i]}`}>{d}</span>
-            ))}
+            {mode === 'easy' &&
+              a.digits.map((d, i) => (
+                <span key={i} className={`digit ${a.colors[i]}`}>{d}</span>
+              ))}
+            {mode === 'challenge' && (
+              <span className="attempt-text">
+                {a.digits.join('')} - {a.result.correct} doğru yerde,{' '}
+                {a.result.misplaced} farklı yerde, {a.result.wrong} yok
+              </span>
+            )}
           </div>
         ))}
       </div>
+      <footer className="footer">Mustafa Evleksiz Tarafından geliştirilmiştir</footer>
     </div>
-  )
-}
+    )
+  }
