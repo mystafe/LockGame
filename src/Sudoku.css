@@ -3,6 +3,11 @@
   animation: fadein 0.5s ease-in;
 }
 
+.sudoku h1 {
+  margin: 0.25rem 0;
+  font-size: 1.5rem;
+}
+
 .board {
   border-collapse: collapse;
   margin: 1rem auto;
@@ -26,6 +31,10 @@
   text-align: center;
   color: #000;
   position: relative;
+  transition: background-color 0.3s;
+}
+.board td:active {
+  background-color: #e0e0e0;
 }
 .board input {
   width: 100%;
@@ -85,6 +94,7 @@
 }
 .active-cell {
   outline: 2px solid #2196f3;
+  animation: pulse 1s infinite;
 }
 .digit-pad {
   position: fixed;
@@ -102,14 +112,32 @@
 .digit-pad button {
   width: 2.5rem;
   height: 2.5rem;
+  transition: transform 0.2s;
 }
 .digit-pad button:disabled {
   opacity: 0.5;
+}
+.digit-pad button:active {
+  transform: scale(0.9);
 }
 
 @media (min-width: 768px) {
   .digit-pad {
     display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .board td {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+  .board input {
+    font-size: 1.2rem;
+  }
+  .digit-pad button {
+    width: 2rem;
+    height: 2rem;
   }
 }
 .controls {
@@ -196,4 +224,9 @@
   .prefilled {
     color: inherit;
   }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
