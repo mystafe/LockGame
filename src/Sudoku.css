@@ -1,5 +1,6 @@
 .sudoku {
   text-align: center;
+  animation: fadein 0.5s ease-in;
 }
 
 .board {
@@ -48,6 +49,7 @@
 }
 .note-cell.readonly span {
   cursor: default;
+  opacity: 0.6;
 }
 .note-cell span.active {
   color: red;
@@ -66,6 +68,26 @@
   margin-top: 0.5rem;
   font-weight: bold;
 }
+
+@media (min-width: 1024px) {
+  .board td {
+    width: 4rem;
+    height: 4rem;
+  }
+  .board input {
+    font-size: 2rem;
+  }
+}
+
+.block0 { background: #fdf5e6; }
+.block1 { background: #eef7fd; }
+.block2 { background: #f0f9ef; }
+.block3 { background: #f3e8fd; }
+.block4 { background: #fffbe6; }
+.block5 { background: #e8f7f9; }
+.block6 { background: #fef0f0; }
+.block7 { background: #e9f0fe; }
+.block8 { background: #f0ffe6; }
 
 @media (prefers-color-scheme: dark) {
   .board td {

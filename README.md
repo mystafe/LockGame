@@ -1,4 +1,4 @@
-# Kilit Tahmin Oyunu ve Sudoku
+# minigames
 
 Bu proje React ile geliştirilmiş iki farklı oyun içerir: sayısal kilit tahmini ve Sudoku. Kilit oyununda sistem rastgele hanelerden oluşan bir şifre belirler. Oyuncu rakamları yukarı/aşağı okları ile değiştirerek tahmin yapar. Toplam deneme hakkı seçilen zorluğa göre değişir.
 
