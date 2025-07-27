@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import SudokuGame from './SudokuGame.jsx'
 
 function generateSecret(length) {
   return Array.from({ length }, () => Math.floor(Math.random() * 10))
@@ -27,8 +28,10 @@ function DigitWheel({ value, onChange, disabled }) {
 
 export default function App() {
   const [screen, setScreen] = useState('start')
+  const [gameType, setGameType] = useState('lock') // lock or sudoku
   const [mode, setMode] = useState('easy') // 'easy' or 'challenge'
-  const [difficulty, setDifficulty] = useState('easy') // easy, medium, hard
+  const [difficulty, setDifficulty] = useState('easy') // lock difficulty
+  const [sudokuDifficulty, setSudokuDifficulty] = useState('easy')
 
   const [codeLength, setCodeLength] = useState(4)
   const [maxAttempts, setMaxAttempts] = useState(10)
@@ -40,17 +43,21 @@ export default function App() {
   const finished = status !== ''
 
   const startGame = () => {
-    const lengths = { easy: 4, medium: 5, hard: 6 }
-    const attemptsMap = { easy: 10, medium: 8, hard: 6 }
-    const len = lengths[difficulty]
-    const att = attemptsMap[difficulty]
-    setCodeLength(len)
-    setMaxAttempts(att)
-    setSecret(generateSecret(len))
-    setGuess(Array(len).fill(0))
-    setAttempts([])
-    setStatus('')
-    setScreen('play')
+    if (gameType === 'lock') {
+      const lengths = { easy: 4, medium: 5, hard: 6 }
+      const attemptsMap = { easy: 10, medium: 8, hard: 6 }
+      const len = lengths[difficulty]
+      const att = attemptsMap[difficulty]
+      setCodeLength(len)
+      setMaxAttempts(att)
+      setSecret(generateSecret(len))
+      setGuess(Array(len).fill(0))
+      setAttempts([])
+      setStatus('')
+      setScreen('play')
+    } else {
+      setScreen('sudoku')
+    }
   }
 
   const handleChange = (index, val) => {
@@ -129,35 +136,61 @@ export default function App() {
   }
 
   const handleRestart = () => {
-    setSecret(generateSecret(codeLength))
-    setGuess(Array(codeLength).fill(0))
-    setAttempts([])
-    setStatus('')
+    setScreen('start')
   }
 
   if (screen === 'start') {
     return (
       <div className="app">
-        <h1>Lock Game</h1>
+        <h1>Oyun Seçimi</h1>
         <div className="options">
           <div>
-            <label>Mod: </label>
-            <select value={mode} onChange={(e) => setMode(e.target.value)}>
-              <option value="easy">Lock Game Easy</option>
-              <option value="challenge">Lock Game Challenge</option>
+            <label>Oyun: </label>
+            <select value={gameType} onChange={(e) => setGameType(e.target.value)}>
+              <option value="lock">Lock Game</option>
+              <option value="sudoku">Sudoku</option>
             </select>
           </div>
-          <div>
-            <label>Zorluk: </label>
-            <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-              <option value="easy">Kolay (4 hane, 10 hak)</option>
-              <option value="medium">Orta (5 hane, 8 hak)</option>
-              <option value="hard">Zor (6 hane, 6 hak)</option>
-            </select>
-          </div>
+          {gameType === 'lock' && (
+            <>
+              <div>
+                <label>Mod: </label>
+                <select value={mode} onChange={(e) => setMode(e.target.value)}>
+                  <option value="easy">Lock Game Easy</option>
+                  <option value="challenge">Lock Game Challenge</option>
+                </select>
+              </div>
+              <div>
+                <label>Zorluk: </label>
+                <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+                  <option value="easy">Kolay (4 hane, 10 hak)</option>
+                  <option value="medium">Orta (5 hane, 8 hak)</option>
+                  <option value="hard">Zor (6 hane, 6 hak)</option>
+                </select>
+              </div>
+            </>
+          )}
+          {gameType === 'sudoku' && (
+            <div>
+              <label>Zorluk: </label>
+              <select value={sudokuDifficulty} onChange={(e) => setSudokuDifficulty(e.target.value)}>
+                <option value="easy">5x5 Kolay</option>
+                <option value="medium">9x9 Orta</option>
+                <option value="hard">9x9 Zor</option>
+              </select>
+            </div>
+          )}
           <button onClick={startGame}>Başla</button>
         </div>
         <footer className="footer">Mustafa Evleksiz Tarafından geliştirilmiştir</footer>
+      </div>
+    )
+  }
+
+  if (screen === 'sudoku') {
+    return (
+      <div className="app">
+        <SudokuGame difficulty={sudokuDifficulty} onBack={handleRestart} />
       </div>
     )
   }

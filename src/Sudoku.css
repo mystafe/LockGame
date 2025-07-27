@@ -1,0 +1,34 @@
+.sudoku {
+  text-align: center;
+}
+
+.board {
+  border-collapse: collapse;
+  margin: 1rem auto;
+}
+.board td {
+  border: 1px solid #333;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+}
+.board input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  border: none;
+  font-size: 1rem;
+}
+.prefilled {
+  background: #eee;
+}
+.controls {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.status {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
