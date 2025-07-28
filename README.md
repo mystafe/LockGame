@@ -15,7 +15,7 @@ Her tahmin sonrası sonuçlar renklerle gösterilir:
 
 Tüm rakamlar doğru tahmin edildiğinde veya haklar bittiğinde oyun sona erer ve yeniden başlatma butonu görünür.
 
-Kakuro oyununda ise satır ve sütunlardaki toplamları kullanarak boş kareleri doğru sayılarla doldurmaya çalışırsınız.
+Kakuro oyununda ise satır ve sütunlardaki toplamları kullanarak boş kareleri doğru sayılarla doldurmaya çalışırsınız. Artık hücreler için küçük notlar bırakabilir ve yenileme düğmesine tıkladıkça rastgele sayılardan oluşan yeni bir tablo oluşturabilirsiniz.
 
 ## Kurulum
 
