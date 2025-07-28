@@ -29,6 +29,7 @@ body {
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
+  background: linear-gradient(135deg, #2b5876, #4e4376);
 }
 
 h1 {
