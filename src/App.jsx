@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import SudokuGame from './SudokuGame.jsx'
+import KakuroGame from './KakuroGame.jsx'
 function generateSecret(length) {
   return Array.from({ length }, () => Math.floor(Math.random() * 10))
 }
@@ -61,7 +62,7 @@ export default function App() {
       setStatus('')
       setScreen('play')
     } else {
-      setScreen('sudoku')
+      setScreen(gameType === 'sudoku' ? 'sudoku' : 'kakuro')
     }
   }
 
@@ -154,6 +155,7 @@ export default function App() {
             <select value={gameType} onChange={(e) => setGameType(e.target.value)}>
               <option value="sudoku">Sudoku</option>
               <option value="lock">Lock Game</option>
+              <option value="kakuro">Kakuro</option>
             </select>
           </div>
           {gameType === 'lock' && (
@@ -190,6 +192,8 @@ export default function App() {
             <select value={theme} onChange={(e) => setTheme(e.target.value)}>
               <option value="glass">Bulanık Cam</option>
               <option value="metal">Metal</option>
+              <option value="wood">Ahşap</option>
+              <option value="earth">Toprak</option>
             </select>
           </div>
           <div>
@@ -212,6 +216,14 @@ export default function App() {
     return (
       <div className="app sudoku-app">
         <SudokuGame difficulty={sudokuDifficulty} onBack={handleRestart} />
+      </div>
+    )
+  }
+
+  if (screen === 'kakuro') {
+    return (
+      <div className="app kakuro-app">
+        <KakuroGame onBack={handleRestart} />
       </div>
     )
   }
