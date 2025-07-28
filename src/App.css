@@ -57,13 +57,21 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.options select,
+.options select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+}
 .options button {
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
@@ -89,6 +97,11 @@
 }
 
 .sudoku-app {
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+}
+
+.kakuro-app {
   justify-content: flex-start;
   padding-top: 0.5rem;
 }

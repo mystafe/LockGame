@@ -82,6 +82,20 @@ body {
   background: linear-gradient(135deg, #4b4b4b, #b5b5b5);
 }
 
+.theme-wood {
+  background: repeating-linear-gradient(
+    45deg,
+    #7b4a12,
+    #7b4a12 10px,
+    #9d6520 10px,
+    #9d6520 20px
+  );
+}
+
+.theme-earth {
+  background: linear-gradient(135deg, #614126, #ad8762);
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
