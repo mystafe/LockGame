@@ -92,6 +92,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
   const [rand, setRand] = useState(() => createRandomData())
   const [board, setBoard] = useState(rand.puzzle.map(r => [...r]))
   const [hintsLeft, setHintsLeft] = useState(cfg.hints)
+  const [superMode, setSuperMode] = useState(false)
   const [mistakes, setMistakes] = useState(0)
   const [noteMode, setNoteMode] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
@@ -199,7 +200,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
   }
 
   const giveHint = () => {
-    if (hintsLeft <= 0 || finished) return
+    if ((!superMode && hintsLeft <= 0) || finished) return
     const empties = []
     for (let r = 0; r < cfg.size; r++) {
       for (let c = 0; c < cfg.size; c++) {
@@ -218,7 +219,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     newNotes = removeNotesForNumber(r, c, rand.solution[r][c], newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
-    setHintsLeft(hintsLeft - 1)
+    if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
   const giveFreeHint = () => {
@@ -269,18 +270,14 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     setNotes(newNotes)
   }
 
-  const fixCurrentNote = () => {
-    if (!activeCell) return
-    const { r, c } = activeCell
-    const allowed = getAllowedDigits(r, c)
-    const newNotes = notes.map(row => row.map(n => [...n]))
-    newNotes[r][c] = allowed
-    setNotes(newNotes)
-  }
 
   const handleHeaderClick = () => {
     const count = headerClicks + 1
     if (count >= 5) {
+      if (!superMode) {
+        setSuperMode(true)
+        setHintsLeft(Infinity)
+      }
       giveFreeHint()
       setHeaderClicks(0)
     } else {
@@ -293,7 +290,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     setRand(newData)
     setBoard(newData.puzzle.map(r => [...r]))
     setNotes(newData.puzzle.map(row => row.map(() => [])))
-    setHintsLeft(cfg.hints)
+    setHintsLeft(superMode ? Infinity : cfg.hints)
     setMistakes(0)
   }
 
@@ -357,6 +354,21 @@ export default function SudokuGame({ difficulty, onBack, version }) {
           ))}
         </tbody>
       </table>
+      <div className="controls">
+        <button
+          className={`note-btn${noteMode ? ' active' : ' inactive'}`}
+          onClick={() => setNoteMode(!noteMode)}
+        >
+          ✏️
+        </button>
+        {superMode && (
+          <button onClick={fixAllNotes}>Notları Düzelt</button>
+        )}
+        <button onClick={giveHint} disabled={!superMode && hintsLeft <= 0}>
+          Ipucu ({superMode ? '∞' : hintsLeft})
+        </button>
+        <button onClick={onBack}>Ana Sayfa / Ayarlar</button>
+      </div>
       {activeCell && (
         <div className="digit-pad">
           {(() => {
@@ -380,20 +392,6 @@ export default function SudokuGame({ difficulty, onBack, version }) {
           </button>
         </div>
       )}
-      <div className="controls">
-        <button
-          className={`note-btn${noteMode ? ' active' : ' inactive'}`}
-          onClick={() => setNoteMode(!noteMode)}
-        >
-          ✏️
-        </button>
-        <button onClick={fixCurrentNote}>Notu Düzelt</button>
-        <button onClick={fixAllNotes}>Notları Düzelt</button>
-        <button onClick={giveHint} disabled={hintsLeft <= 0}>
-          Ipucu ({hintsLeft})
-        </button>
-        <button onClick={onBack}>Ana Sayfa</button>
-      </div>
       {finished && <p className="status">Tebrikler!</p>}
       {finished && (
         <div className="end-controls">

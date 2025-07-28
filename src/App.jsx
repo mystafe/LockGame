@@ -158,7 +158,7 @@ export default function App() {
               <div>
                 <label>Mod: </label>
                 <select value={mode} onChange={(e) => setMode(e.target.value)}>
-                  <option value="easy">Lock Game Easy</option>
+                  <option value="easy">LockGame Casual</option>
                   <option value="challenge">Lock Game Challenge</option>
                 </select>
               </div>
@@ -199,7 +199,7 @@ export default function App() {
 
     return (
       <div className="app">
-        <h1>{mode === 'easy' ? 'Lock Game Easy' : 'Lock Game Challenge'}</h1>
+        <h1 className="lock-title">{mode === 'easy' ? 'LockGame Casual' : 'Lock Game Challenge'}</h1>
         <div className="wheels">
         {guess.map((d, i) => (
           <DigitWheel
@@ -210,8 +210,11 @@ export default function App() {
           />
         ))}
       </div>
-      {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
-      {finished && <button onClick={handleRestart}>Yeniden Başlat</button>}
+      <div className="lock-controls">
+        {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
+        {finished && <button onClick={handleRestart}>Yeniden Başlat</button>}
+        <button onClick={handleRestart}>Ana Sayfa</button>
+      </div>
       <p>Kalan Hak: {maxAttempts - attempts.length}</p>
       {status && <p className="status">{status}</p>}
       <div className="history">

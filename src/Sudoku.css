@@ -14,6 +14,10 @@
 .board {
   border-collapse: collapse;
   margin: 0.5rem auto;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .board.size9 td:nth-child(3n) {
   border-right: 3px solid #333;
@@ -86,11 +90,13 @@
   opacity: 1;
 }
 .note-btn {
-  background: red;
-  color: white;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--gs-yellow);
 }
 .note-btn.active {
-  background: darkred;
+  color: var(--gs-red);
 }
 .note-btn.inactive {
   opacity: 0.6;
@@ -100,23 +106,24 @@
   animation: pulse 1s infinite;
 }
 .digit-pad {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  margin-top: 0.5rem;
   width: 100%;
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem;
   padding: 0.5rem;
-  z-index: 500;
 }
 .digit-pad button {
   width: 100%;
   height: 3rem;
   transition: transform 0.2s;
+  border-radius: 8px;
+  background: var(--gs-red);
+  color: #fff;
+  border: none;
 }
 .digit-pad button:disabled {
   opacity: 0.5;
@@ -205,7 +212,7 @@
 .block4,
 .block6,
 .block8 {
-  background: #fdb912;
+  background: rgba(253, 185, 18, 0.3);
   color: #000;
 }
 
@@ -213,7 +220,7 @@
 .block3,
 .block5,
 .block7 {
-  background: #a90432;
+  background: rgba(169, 4, 50, 0.5);
   color: #fff;
 }
 

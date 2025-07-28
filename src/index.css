@@ -3,6 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
+  --gs-red: #a90432;
+  --gs-yellow: #fdb913;
+
   color-scheme: light dark;
   color: #f0f0f0;
   background-color: #121212;
@@ -29,7 +32,7 @@ body {
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #2b5876, #4e4376);
+  background: linear-gradient(135deg, var(--gs-red), var(--gs-yellow));
 }
 
 h1 {
@@ -44,12 +47,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #333;
+  background-color: var(--gs-red);
+  color: #fff;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--gs-yellow);
 }
 button:focus,
 button:focus-visible {
@@ -65,7 +69,8 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--gs-red);
+    color: #fff;
   }
 }
 
