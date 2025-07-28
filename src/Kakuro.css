@@ -58,3 +58,54 @@
   margin-top: 0.5rem;
   font-weight: bold;
 }
+
+.note-cell {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 0.7rem;
+}
+.note-cell span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.2;
+}
+.note-cell.readonly span {
+  cursor: default;
+  opacity: 0.2;
+}
+.note-cell.readonly {
+  pointer-events: none;
+}
+.note-cell span.active {
+  color: #2196f3;
+  opacity: 1;
+}
+
+.note-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  padding: 0.4em;
+  border-radius: 8px;
+  color: var(--secondary);
+}
+.note-btn:hover {
+  border: none;
+}
+.note-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+.note-btn.inactive {
+  opacity: 0.6;
+  background: transparent;
+}
