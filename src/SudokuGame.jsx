@@ -5,12 +5,12 @@ import './Sudoku.css'
 const data = {
   easy: {
     size: 5,
-    hints: 3,
+    hints: 5,
     puzzle: [
       [1,2,0,4,5],
-      [4,0,1,0,3],
-      [0,3,4,5,1],
-      [5,1,0,3,0],
+      [4,5,1,0,3],
+      [2,3,4,5,1],
+      [5,1,0,3,4],
       [3,0,5,1,2]
     ],
     solution: [
@@ -23,17 +23,17 @@ const data = {
   },
   medium: {
     size: 9,
-    hints: 3,
+    hints: 5,
     puzzle: [
-      [5,3,0,0,7,0,0,0,0],
-      [6,0,0,1,9,5,0,0,0],
-      [0,9,8,0,0,0,0,6,0],
-      [8,0,0,0,6,0,0,0,3],
-      [4,0,0,8,0,3,0,0,1],
-      [7,0,0,0,2,0,0,0,6],
-      [0,6,0,0,0,0,2,8,0],
-      [0,0,0,4,1,9,0,0,5],
-      [0,0,0,0,8,0,0,7,9]
+      [5,3,4,6,7,0,0,0,2],
+      [6,7,2,1,9,5,3,0,0],
+      [1,0,0,3,0,0,5,0,0],
+      [8,0,9,0,6,1,4,2,0],
+      [4,0,6,8,0,3,7,0,1],
+      [0,1,3,9,2,0,0,0,6],
+      [9,0,1,5,0,0,0,8,0],
+      [2,0,0,4,1,9,6,0,5],
+      [3,0,0,2,8,0,0,7,9]
     ],
     solution: [
       [5,3,4,6,7,8,9,1,2],
@@ -49,17 +49,17 @@ const data = {
   },
   hard: {
     size: 9,
-    hints: 1,
+    hints: 3,
     puzzle: [
-      [0,3,0,0,7,0,0,0,0],
-      [6,0,0,0,0,0,0,4,0],
-      [0,0,0,3,0,0,5,0,0],
-      [8,0,0,0,6,1,0,2,0],
-      [0,0,6,8,0,3,7,0,0],
-      [0,1,0,0,2,0,0,0,6],
-      [0,0,1,5,0,0,0,8,0],
-      [0,0,0,4,1,9,0,0,5],
-      [0,0,0,0,8,0,0,7,9]
+      [5,3,0,6,7,0,0,0,0],
+      [6,7,2,0,0,0,0,4,0],
+      [1,0,0,3,0,0,5,0,0],
+      [8,0,9,0,6,1,4,2,0],
+      [4,0,6,8,0,3,7,0,1],
+      [0,1,3,9,2,0,0,0,6],
+      [9,0,1,5,0,0,0,8,0],
+      [2,0,0,4,1,9,6,0,5],
+      [3,0,0,2,8,0,0,7,9]
     ],
     solution: [
       [5,3,4,6,7,8,9,1,2],
@@ -75,7 +75,7 @@ const data = {
   }
 }
 
-export default function SudokuGame({ difficulty, onBack, version }) {
+export default function SudokuGame({ difficulty, onBack }) {
   const cfg = data[difficulty]
   const createRandomData = () => {
     const digits = Array.from({ length: cfg.size }, (_, i) => i + 1)
@@ -100,6 +100,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     rand.puzzle.map(row => row.map(() => []))
   )
   const [activeCell, setActiveCell] = useState(null)
+  const [errors, setErrors] = useState({})
   const [headerClicks, setHeaderClicks] = useState(0)
   const maxMistakes = difficulty === 'hard' ? 3 : Infinity
   const finished = board.every((row, r) =>
@@ -174,12 +175,26 @@ export default function SudokuGame({ difficulty, onBack, version }) {
       const newBoard = board.map(row => [...row])
       newBoard[r][c] = 0
       setBoard(newBoard)
+      setErrors(prev => {
+        const e = { ...prev }
+        delete e[`${r}-${c}`]
+        return e
+      })
       return
     }
     const num = parseInt(val, 10)
     if (!num || num < 1 || num > cfg.size) return
     const newBoard = board.map(row => [...row])
     newBoard[r][c] = num
+    setErrors(prev => {
+      const e = { ...prev }
+      if (num !== rand.solution[r][c]) {
+        e[`${r}-${c}`] = true
+      } else {
+        delete e[`${r}-${c}`]
+      }
+      return e
+    })
     if (num !== rand.solution[r][c]) {
       if (difficulty === 'hard') {
         const m = mistakes + 1
@@ -219,6 +234,11 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     newNotes = removeNotesForNumber(r, c, rand.solution[r][c], newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
+    setErrors(prev => {
+      const e = { ...prev }
+      delete e[`${r}-${c}`]
+      return e
+    })
     if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
@@ -242,6 +262,11 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     newNotes = removeNotesForNumber(r, c, rand.solution[r][c], newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
+    setErrors(prev => {
+      const e = { ...prev }
+      delete e[`${r}-${c}`]
+      return e
+    })
   }
 
   const getAllowedDigits = (r, c) => {
@@ -292,6 +317,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
     setNotes(newData.puzzle.map(row => row.map(() => [])))
     setHintsLeft(superMode ? Infinity : cfg.hints)
     setMistakes(0)
+    setErrors({})
   }
 
   return (
@@ -308,11 +334,15 @@ export default function SudokuGame({ difficulty, onBack, version }) {
                 const block = cfg.size === 9
                   ? `block${Math.floor(r / 3) * 3 + Math.floor(c / 3)}`
                   : ''
+                const wrong = errors[`${r}-${c}`]
+                const cellClass = [
+                  rand.puzzle[r][c] !== 0 ? 'prefilled' : '',
+                  block,
+                  activeCell && activeCell.r === r && activeCell.c === c ? 'active-cell' : '',
+                  wrong ? 'wrong' : ''
+                ].join(' ').trim()
                 return (
-                  <td
-                    key={c}
-                    className={`${rand.puzzle[r][c] !== 0 ? 'prefilled ' : ''}${block}${activeCell && activeCell.r === r && activeCell.c === c ? ' active-cell' : ''}`.trim()}
-                  >
+                  <td key={c} className={cellClass}>
                     <input
                       data-pos={`${r}-${c}`}
                       value={cell === 0 ? '' : cell}
@@ -370,7 +400,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
             onClick={giveHint}
             disabled={!superMode && hintsLeft <= 0}
           >
-            💡 ({superMode ? '∞' : hintsLeft})
+            💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
           </button>
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
@@ -413,7 +443,6 @@ export default function SudokuGame({ difficulty, onBack, version }) {
           style={{ left: mouse.x, top: mouse.y }}
         />
       )}
-      <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
     </div>
   )
 }

@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import SudokuGame from './SudokuGame.jsx'
-import pkg from '../package.json'
-
-const version = pkg.version
 function generateSecret(length) {
   return Array.from({ length }, () => Math.floor(Math.random() * 10))
 }
@@ -207,7 +204,6 @@ export default function App() {
           </div>
           <button onClick={startGame}>Başla</button>
         </div>
-        <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
       </div>
     )
   }
@@ -215,7 +211,7 @@ export default function App() {
   if (screen === 'sudoku') {
     return (
       <div className="app sudoku-app">
-        <SudokuGame difficulty={sudokuDifficulty} version={version} onBack={handleRestart} />
+        <SudokuGame difficulty={sudokuDifficulty} onBack={handleRestart} />
       </div>
     )
   }
@@ -256,7 +252,6 @@ export default function App() {
           </div>
         ))}
       </div>
-      <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
     </div>
     )
   }
