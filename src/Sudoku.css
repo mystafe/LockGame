@@ -93,7 +93,7 @@
 }
 .note-btn {
   background: transparent;
-  border: 1px solid var(--secondary);
+  border: none;
   font-size: 1.4rem;
   padding: 0.4em;
   border-radius: 8px;
@@ -102,13 +102,21 @@
 .note-btn.active {
   background: var(--primary);
   color: #fff;
+  border: 1px solid var(--secondary);
 }
 .note-btn.inactive {
   opacity: 0.6;
 }
+
+.hint-count {
+  font-size: 0.7em;
+}
 .active-cell {
   outline: 2px solid #2196f3;
   animation: pulse 1s infinite;
+}
+.wrong input {
+  color: #e53935;
 }
 .digit-pad {
   margin-top: 0.5rem;
@@ -164,8 +172,8 @@
 }
 .controls button,
 .end-controls button {
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.8rem;
+  height: 2.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
