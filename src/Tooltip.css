@@ -1,0 +1,42 @@
+.info-btn {
+  margin-left: 0.25rem;
+  cursor: pointer;
+}
+
+.info-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.info-content {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 90vw;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.info-tips {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.info-tips li + li {
+  margin-top: 0.25rem;
+}
+
+.close-hint {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
