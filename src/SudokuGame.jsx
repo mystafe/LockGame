@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './Sudoku.css'
 
 const data = {
@@ -100,10 +100,35 @@ export default function SudokuGame({ difficulty, onBack }) {
   const [activeCell, setActiveCell] = useState(null)
   const [errors, setErrors] = useState({})
   const [headerClicks, setHeaderClicks] = useState(0)
+  const [startTime, setStartTime] = useState(Date.now())
+  const [elapsed, setElapsed] = useState(0)
+  const [bestTime, setBestTime] = useState(() => {
+    const s = localStorage.getItem(`sudokuBestTime-${difficulty}`)
+    return s ? parseInt(s, 10) : null
+  })
   const maxMistakes = difficulty === 'hard' ? 3 : Infinity
   const finished = board.every((row, r) =>
     row.every((val, c) => val === rand.solution[r][c])
   )
+
+  useEffect(() => {
+    if (finished) return
+    const id = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startTime) / 1000))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [startTime, finished])
+
+  useEffect(() => {
+    if (finished) {
+      const total = Math.floor((Date.now() - startTime) / 1000)
+      setElapsed(total)
+      if (bestTime === null || total < bestTime) {
+        setBestTime(total)
+        localStorage.setItem(`sudokuBestTime-${difficulty}`, total.toString())
+      }
+    }
+  }, [finished, bestTime, difficulty, startTime])
 
 
 
@@ -205,7 +230,13 @@ export default function SudokuGame({ difficulty, onBack }) {
     newNotes = removeNotesForNumber(r, c, num, newNotes)
     setNotes(newNotes)
     setBoard(newBoard)
-    focusNextCell(r, c, newBoard)
+    if (num === rand.solution[r][c]) {
+      focusNextCell(r, c, newBoard)
+    } else {
+      const el = document.querySelector(`input[data-pos='${r}-${c}']`)
+      if (el) el.focus()
+      setActiveCell({ r, c })
+    }
   }
 
   const giveHint = () => {
@@ -312,14 +343,30 @@ export default function SudokuGame({ difficulty, onBack }) {
     setHintsLeft(superMode ? Infinity : cfg.hints)
     setMistakes(0)
     setErrors({})
+    setStartTime(Date.now())
+    setElapsed(0)
+  }
+
+  const formatTime = (s) => {
+    const m = Math.floor(s / 60)
+      .toString()
+      .padStart(2, '0')
+    const sec = (s % 60).toString().padStart(2, '0')
+    return `${m}:${sec}`
   }
 
   return (
     <div className={`sudoku${finished ? ' finished' : ''}`}>
       <h1 onClick={handleHeaderClick}>Sudoku</h1>
-      {difficulty === 'hard' && (
-        <p className="mistakes">Hata: {mistakes}/{maxMistakes}</p>
-      )}
+      <div className="info-bar">
+        <span className="errors">Hata: {mistakes}{
+          difficulty === 'hard' ? `/${maxMistakes}` : ''
+        }</span>
+        <span>{formatTime(elapsed)}</span>
+        <span className="best">
+          {bestTime !== null ? formatTime(bestTime) : '--:--'}
+        </span>
+      </div>
       <table className={`board size${cfg.size}`}>
         <tbody>
           {board.map((row, r) => (

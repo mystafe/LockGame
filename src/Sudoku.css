@@ -7,8 +7,21 @@
   margin: 0.1rem 0;
   font-size: 1.4rem;
 }
-.mistakes {
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+.info-bar span {
+  flex: 1;
+}
+.info-bar .errors {
+  text-align: left;
+}
+.info-bar .best {
+  text-align: right;
 }
 
 .board {
@@ -99,13 +112,17 @@
   border-radius: 8px;
   color: var(--secondary);
 }
+.note-btn:hover {
+  border: none;
+}
 .note-btn.active {
   background: var(--primary);
   color: #fff;
-  border: 1px solid var(--secondary);
+  border: none;
 }
 .note-btn.inactive {
   opacity: 0.6;
+  background: transparent;
 }
 
 .hint-count {
