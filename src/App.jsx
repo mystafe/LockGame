@@ -4,6 +4,7 @@ import SudokuGame from './SudokuGame.jsx'
 import KakuroGame from './KakuroGame.jsx'
 import TabooGame from './TabooGame.jsx'
 import WordPuzzleGame from './WordPuzzleGame.jsx'
+import Tooltip from './Tooltip.jsx'
 function generateSecret(length) {
   return Array.from({ length }, () => Math.floor(Math.random() * 10))
 }
@@ -34,6 +35,21 @@ export default function App() {
   const [mode, setMode] = useState('easy') // 'easy' or 'challenge'
   const [difficulty, setDifficulty] = useState('easy') // lock difficulty
   const [sudokuDifficulty, setSudokuDifficulty] = useState('hard')
+  const themes = [
+    'glass',
+    'broken',
+    'fabric',
+    'lime',
+    'forest',
+    'pastel',
+    'watercolor',
+    'ocean',
+    'metal',
+    'wood',
+    'earth',
+  ]
+  const randomTheme = () => themes[Math.floor(Math.random() * themes.length)]
+
   const [theme, setTheme] = useState('glass')
   const [palette, setPalette] = useState('gs')
 
@@ -44,6 +60,13 @@ export default function App() {
   const [attempts, setAttempts] = useState([])
   const [status, setStatus] = useState('')
   const [bestScore, setBestScore] = useState(null)
+  const [hintsLeft, setHintsLeft] = useState(0)
+  const [revealed, setRevealed] = useState([])
+  const lockTricks = [
+    'Ayni rakamdan birden fazla kullanabilirsiniz',
+    'Ilk tahminlerde rastgele deneyin',
+    'Sonuclara gore rakamlari yer degistirin',
+  ].sort()
 
   useEffect(() => {
     document.body.className = `theme-${theme} palette-${palette}`
@@ -64,12 +87,15 @@ export default function App() {
       const attemptsMap = { easy: 10, medium: 8, hard: 6 }
       const len = lengths[difficulty]
       const att = attemptsMap[difficulty]
+      setTheme(randomTheme())
       setCodeLength(len)
       setMaxAttempts(att)
       setSecret(generateSecret(len))
       setGuess(Array(len).fill(0))
       setAttempts([])
       setStatus('')
+      setHintsLeft(difficulty === 'hard' ? 0 : 1)
+      setRevealed(Array(len).fill(false))
       setScreen('play')
     } else {
       if (gameType === 'sudoku') setScreen('sudoku')
@@ -164,6 +190,38 @@ export default function App() {
         setStatus('Deneme hakkınız bitti. Şifre: ' + secret.join(''))
       }
     }
+  }
+
+  const restartLockGame = () => {
+    const lengths = { easy: 4, medium: 5, hard: 6 }
+    const attemptsMap = { easy: 10, medium: 8, hard: 6 }
+    const len = lengths[difficulty]
+    const att = attemptsMap[difficulty]
+    setTheme(randomTheme())
+    setCodeLength(len)
+    setMaxAttempts(att)
+    setSecret(generateSecret(len))
+    setGuess(Array(len).fill(0))
+    setAttempts([])
+    setStatus('')
+    setHintsLeft(difficulty === 'hard' ? 0 : 1)
+    setRevealed(Array(len).fill(false))
+  }
+
+  const useHint = () => {
+    if (hintsLeft <= 0) return
+    const choices = revealed
+      .map((r, i) => (!r ? i : null))
+      .filter(i => i !== null)
+    if (choices.length === 0) return
+    const idx = choices[Math.floor(Math.random() * choices.length)]
+    const g = [...guess]
+    g[idx] = secret[idx]
+    setGuess(g)
+    const rev = [...revealed]
+    rev[idx] = true
+    setRevealed(rev)
+    setHintsLeft(hintsLeft - 1)
   }
 
   const handleRestart = () => {
@@ -280,20 +338,41 @@ export default function App() {
 
     return (
       <div className="app">
-        <h1 className="lock-title">{mode === 'easy' ? 'LockGame Casual' : 'Lock Game Challenge'}</h1>
+        <h1 className="lock-title">
+          {mode === 'easy' ? 'LockGame Casual' : 'Lock Game Challenge'}
+          <Tooltip content="Rakamlari oklarla degistirip dogru sifreyi bulmaya calisin.">
+            <span> ℹ️</span>
+          </Tooltip>
+          <Tooltip
+            content={(
+              <select>
+                {lockTricks.map((t, i) => (
+                  <option key={i}>{t}</option>
+                ))}
+              </select>
+            )}
+          >
+            <button className="icon-btn">Devamı</button>
+          </Tooltip>
+        </h1>
         <div className="wheels">
         {guess.map((d, i) => (
           <DigitWheel
             key={i}
             value={d}
             onChange={(val) => handleChange(i, val)}
-            disabled={finished}
+            disabled={finished || revealed[i]}
           />
         ))}
       </div>
       <div className="lock-controls">
         {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
-        {finished && <button className="icon-btn" onClick={handleRestart}>🔄</button>}
+        {!finished && hintsLeft > 0 && (
+          <button className="icon-btn" onClick={useHint}>💡 ({hintsLeft})</button>
+        )}
+        {finished && (
+          <button className="icon-btn" onClick={restartLockGame}>🔄</button>
+        )}
         <button className="icon-btn" onClick={handleRestart}>🏠</button>
       </div>
       <p>Kalan Hak: {maxAttempts - attempts.length}</p>

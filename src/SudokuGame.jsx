@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './Sudoku.css'
+import Tooltip from './Tooltip.jsx'
 
 const data = {
   easy: {
@@ -75,6 +76,11 @@ const data = {
 }
 
 export default function SudokuGame({ difficulty, onBack }) {
+  const tricks = [
+    'Bos hucrelerde olasi rakamlari not alin',
+    'Satir ve sutunlari tarayarak eksik rakamlari bulun',
+    'Tek ihtimali olan hucrelere odaklanin',
+  ].sort()
   const cfg = data[difficulty]
   const createRandomData = () => {
     const digits = Array.from({ length: cfg.size }, (_, i) => i + 1)
@@ -357,7 +363,23 @@ export default function SudokuGame({ difficulty, onBack }) {
 
   return (
     <div className={`sudoku${finished ? ' finished' : ''}`}>
-      <h1 onClick={handleHeaderClick}>Sudoku</h1>
+      <h1 onClick={handleHeaderClick}>
+        Sudoku
+        <Tooltip content="Her satir, sutun ve blokta 1-9 arasi rakamlar tekrarsiz olmali.">
+          <span> ℹ️</span>
+        </Tooltip>
+        <Tooltip
+          content={(
+            <select>
+              {tricks.map((t, i) => (
+                <option key={i}>{t}</option>
+              ))}
+            </select>
+          )}
+        >
+          <button className="icon-btn">Devamı</button>
+        </Tooltip>
+      </h1>
       <div className="info-bar">
         <span className="errors">Hata: {mistakes}{
           difficulty === 'hard' ? `/${maxMistakes}` : ''
