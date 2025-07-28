@@ -78,6 +78,35 @@ body {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
 }
 
+.theme-broken {
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0 2px, transparent 2px 4px),
+    linear-gradient(135deg, #6b8c9b, #d8e0e5);
+}
+
+.theme-fabric {
+  background: repeating-linear-gradient(45deg, #ccc, #ccc 5px, #ddd 5px, #ddd 10px);
+}
+
+.theme-lime {
+  background: linear-gradient(135deg, #e0efc0, #bfe27d);
+}
+
+.theme-forest {
+  background: linear-gradient(135deg, #2b5d34, #6fa76d);
+}
+
+.theme-pastel {
+  background: linear-gradient(135deg, #ffb3ba, #ffdfba, #ffffba, #baffc9, #bae1ff);
+}
+
+.theme-watercolor {
+  background: linear-gradient(135deg, #a2d9ff, #ffd1dc);
+}
+
+.theme-ocean {
+  background: linear-gradient(135deg, #004e92, #000428);
+}
+
 .theme-metal {
   background: linear-gradient(135deg, #4b4b4b, #b5b5b5);
 }
@@ -150,6 +179,20 @@ button:focus-visible {
   button {
     background-color: var(--primary);
     color: #fff;
+  }
+  .app {
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .board {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .board td,
+  .board input {
+    color: #000;
+    text-shadow: none;
   }
 }
 

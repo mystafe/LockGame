@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import SudokuGame from './SudokuGame.jsx'
 import KakuroGame from './KakuroGame.jsx'
+import TabooGame from './TabooGame.jsx'
+import WordPuzzleGame from './WordPuzzleGame.jsx'
 function generateSecret(length) {
   return Array.from({ length }, () => Math.floor(Math.random() * 10))
 }
@@ -41,10 +43,18 @@ export default function App() {
   const [guess, setGuess] = useState([])
   const [attempts, setAttempts] = useState([])
   const [status, setStatus] = useState('')
+  const [bestScore, setBestScore] = useState(null)
 
   useEffect(() => {
     document.body.className = `theme-${theme} palette-${palette}`
   }, [theme, palette])
+
+  useEffect(() => {
+    if (gameType === 'lock') {
+      const val = localStorage.getItem(`lockBest-${mode}-${difficulty}`)
+      setBestScore(val ? parseInt(val, 10) : null)
+    }
+  }, [gameType, mode, difficulty])
 
   const finished = status !== ''
 
@@ -62,7 +72,10 @@ export default function App() {
       setStatus('')
       setScreen('play')
     } else {
-      setScreen(gameType === 'sudoku' ? 'sudoku' : 'kakuro')
+      if (gameType === 'sudoku') setScreen('sudoku')
+      else if (gameType === 'kakuro') setScreen('kakuro')
+      else if (gameType === 'taboo') setScreen('taboo')
+      else if (gameType === 'word') setScreen('word')
     }
   }
 
@@ -125,6 +138,12 @@ export default function App() {
       setAttempts(newAttempts)
       if (colors.every((c) => c === 'green')) {
         setStatus('Tebrikler! Şifre doğru.')
+        const score = newAttempts.length
+        const key = `lockBest-${mode}-${difficulty}`
+        if (bestScore === null || score < bestScore) {
+          setBestScore(score)
+          localStorage.setItem(key, score.toString())
+        }
       } else if (newAttempts.length >= maxAttempts) {
         setStatus('Deneme hakkınız bitti. Şifre: ' + secret.join(''))
       }
@@ -135,6 +154,12 @@ export default function App() {
       setAttempts(newAttempts)
       if (result.correct === codeLength) {
         setStatus('Tebrikler! Şifre doğru.')
+        const score = newAttempts.length
+        const key = `lockBest-${mode}-${difficulty}`
+        if (bestScore === null || score < bestScore) {
+          setBestScore(score)
+          localStorage.setItem(key, score.toString())
+        }
       } else if (newAttempts.length >= maxAttempts) {
         setStatus('Deneme hakkınız bitti. Şifre: ' + secret.join(''))
       }
@@ -156,6 +181,8 @@ export default function App() {
               <option value="sudoku">Sudoku</option>
               <option value="lock">Lock Game</option>
               <option value="kakuro">Kakuro</option>
+              <option value="taboo">Tabu</option>
+              <option value="word">Kelime Bulmaca</option>
             </select>
           </div>
           {gameType === 'lock' && (
@@ -191,6 +218,13 @@ export default function App() {
             <label>Tema: </label>
             <select value={theme} onChange={(e) => setTheme(e.target.value)}>
               <option value="glass">Bulanık Cam</option>
+              <option value="broken">Kırık Cam</option>
+              <option value="fabric">Kumaş</option>
+              <option value="lime">Kireç</option>
+              <option value="forest">Orman</option>
+              <option value="pastel">Pastel</option>
+              <option value="watercolor">Sulu Boya</option>
+              <option value="ocean">Okyanus</option>
               <option value="metal">Metal</option>
               <option value="wood">Ahşap</option>
               <option value="earth">Toprak</option>
@@ -228,6 +262,22 @@ export default function App() {
     )
   }
 
+  if (screen === 'taboo') {
+    return (
+      <div className="app kakuro-app">
+        <TabooGame onBack={handleRestart} />
+      </div>
+    )
+  }
+
+  if (screen === 'word') {
+    return (
+      <div className="app kakuro-app">
+        <WordPuzzleGame onBack={handleRestart} />
+      </div>
+    )
+  }
+
     return (
       <div className="app">
         <h1 className="lock-title">{mode === 'easy' ? 'LockGame Casual' : 'Lock Game Challenge'}</h1>
@@ -247,6 +297,9 @@ export default function App() {
         <button className="icon-btn" onClick={handleRestart}>🏠</button>
       </div>
       <p>Kalan Hak: {maxAttempts - attempts.length}</p>
+      {bestScore !== null && (
+        <p>Best Score: {bestScore}</p>
+      )}
       {status && <p className="status">{status}</p>}
       <div className="history">
         {attempts.map((a, idx) => (
