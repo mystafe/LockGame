@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import pen from './assets/pen.svg'
+import { useState } from 'react'
 import './Sudoku.css'
 
 const data = {
@@ -95,7 +94,6 @@ export default function SudokuGame({ difficulty, onBack }) {
   const [superMode, setSuperMode] = useState(false)
   const [mistakes, setMistakes] = useState(0)
   const [noteMode, setNoteMode] = useState(false)
-  const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const [notes, setNotes] = useState(
     rand.puzzle.map(row => row.map(() => []))
   )
@@ -107,12 +105,7 @@ export default function SudokuGame({ difficulty, onBack }) {
     row.every((val, c) => val === rand.solution[r][c])
   )
 
-  useEffect(() => {
-    if (!noteMode) return
-    const move = e => setMouse({ x: e.clientX, y: e.clientY })
-    window.addEventListener('mousemove', move)
-    return () => window.removeEventListener('mousemove', move)
-  }, [noteMode])
+
 
   const toggleNote = (r, c, num) => {
     const newNotes = notes.map(row => row.map(n => [...n]))
@@ -180,6 +173,7 @@ export default function SudokuGame({ difficulty, onBack }) {
         delete e[`${r}-${c}`]
         return e
       })
+      focusNextCell(r, c, newBoard)
       return
     }
     const num = parseInt(val, 10)
@@ -321,7 +315,7 @@ export default function SudokuGame({ difficulty, onBack }) {
   }
 
   return (
-    <div className={`sudoku${noteMode ? ' note-mode' : ''}${finished ? ' finished' : ''}`}>
+    <div className={`sudoku${finished ? ' finished' : ''}`}>
       <h1 onClick={handleHeaderClick}>Sudoku</h1>
       {difficulty === 'hard' && (
         <p className="mistakes">Hata: {mistakes}/{maxMistakes}</p>
@@ -435,14 +429,7 @@ export default function SudokuGame({ difficulty, onBack }) {
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
       )}
-      {noteMode && (
-        <img
-          src={pen}
-          alt="pen"
-          className="pen-cursor"
-          style={{ left: mouse.x, top: mouse.y }}
-        />
-      )}
+
     </div>
   )
 }
