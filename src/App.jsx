@@ -212,6 +212,7 @@ export default function App() {
       </div>
       {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
       {finished && <button onClick={handleRestart}>Yeniden Başlat</button>}
+      <button onClick={handleRestart}>Ana Sayfa</button>
       <p>Kalan Hak: {maxAttempts - attempts.length}</p>
       {status && <p className="status">{status}</p>}
       <div className="history">
