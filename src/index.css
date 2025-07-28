@@ -144,15 +144,15 @@ button {
 }
 
 .icon-btn {
-  padding: 0.4em;
+  padding: 0.4em 0.6em;
   font-size: 1.4rem;
   background-color: var(--primary);
   border: none;
   color: #fff;
   border-radius: 8px;
-  width: 2.2rem;
+  min-width: 2.2rem;
   height: 2.2rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }

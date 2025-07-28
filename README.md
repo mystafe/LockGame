@@ -1,6 +1,7 @@
 # minigames
 
-Bu proje React ile geliştirilmiş iki farklı oyun içerir: sayısal kilit tahmini ve Sudoku. Kilit oyununda sistem rastgele hanelerden oluşan bir şifre belirler. Oyuncu rakamları yukarı/aşağı okları ile değiştirerek tahmin yapar. Toplam deneme hakkı seçilen zorluğa göre değişir.
+Bu proje React ile geliştirilmiş bir mini oyun setidir. Sayısal kilit, Sudoku ve basit bir Kakuro bulmacası içerir. Kilit oyununda sistem rastgele hanelerden oluşan bir şifre belirler. Oyuncu rakamları yukarı/aşağı okları ile değiştirerek tahmin yapar. Toplam deneme hakkı seçilen zorluğa göre değişir. Kolay ve orta zorlukta birer ipucu kullanılabilir ve oyun her yenilendiğinde tema rastgele seçilir.
+Her oyunda başlık yanında bir **bilgi** simgesi bulunur. Bu simgeye tıkladığınızda yarı saydam tam ekran bir açıklama belirir. Bu pencerede oyunun kuralları ve ipuçları alfabetik sırayla gösterilir. Ekrana tekrar tıklayarak kapatabilirsiniz.
 
 Sudoku oyununda üç zorluk seviyesi bulunur. Kolay seviyede 5x5 karelik mini bir Sudoku sunulur ve üç ipucu verilir. Orta seviyede 9x9 standart Sudoku daha fazla açık sayıyla gelir ve yine üç ipucu sağlanır. Zor seviyede 9x9 Sudoku daha az açık sayı içerir, üç yanılma hakkı ve tek ipucu vardır.
 
@@ -13,6 +14,8 @@ Her tahmin sonrası sonuçlar renklerle gösterilir:
 - **Kırmızı:** Rakam şifre içinde bulunmuyor.
 
 Tüm rakamlar doğru tahmin edildiğinde veya haklar bittiğinde oyun sona erer ve yeniden başlatma butonu görünür.
+
+Kakuro oyununda ise satır ve sütunlardaki toplamları kullanarak boş kareleri doğru sayılarla doldurmaya çalışırsınız.
 
 ## Kurulum
 
