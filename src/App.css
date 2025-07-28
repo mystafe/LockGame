@@ -8,7 +8,7 @@
   justify-content: center;
   align-items: center;
   animation: fadein 0.5s ease-in;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
@@ -53,6 +53,11 @@
   margin-bottom: 1rem;
   width: 100%;
   max-width: 600px;
+}
+.options > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .options select,
@@ -127,6 +132,25 @@
 .digit.red {
   background: #e74c3c;
   color: white;
+}
+
+.lock-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.lock-controls button {
+  font-size: 0.9rem;
+}
+
+.lock-title {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .lock-title {
+    font-size: 1.5rem;
+  }
 }
 
 .status {

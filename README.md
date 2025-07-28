@@ -4,6 +4,8 @@ Bu proje React ile geliştirilmiş iki farklı oyun içerir: sayısal kilit tahm
 
 Sudoku oyununda üç zorluk seviyesi bulunur. Kolay seviyede 5x5 karelik mini bir Sudoku sunulur ve üç ipucu verilir. Orta seviyede 9x9 standart Sudoku daha fazla açık sayıyla gelir ve yine üç ipucu sağlanır. Zor seviyede 9x9 Sudoku daha az açık sayı içerir, üç yanılma hakkı ve tek ipucu vardır.
 
+Beş kez oyun logosuna tıklanırsa **Süper Mod** aktif olur ve ipucu hakkı sınırsız hale gelir. Bu modda notları otomatik düzeltme düğmesi görünür.
+
 Her tahmin sonrası sonuçlar renklerle gösterilir:
 
 - **Yeşil:** Rakam doğru ve doğru sırada.
