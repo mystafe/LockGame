@@ -14,8 +14,8 @@
 .board {
   border-collapse: collapse;
   margin: 0.5rem auto;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -36,7 +36,8 @@
   width: 3.3rem;
   height: 3.3rem;
   text-align: center;
-  color: #000;
+  color: #fff;
+  text-shadow: 0 0 3px #000;
   position: relative;
   transition: background-color 0.3s;
 }
@@ -50,7 +51,8 @@
   border: none;
   font-size: 1.5rem;
   background: transparent;
-  color: inherit;
+  color: #fff;
+  text-shadow: 0 0 3px #000;
   outline: none;
 }
 .board input:disabled {
@@ -90,13 +92,16 @@
   opacity: 1;
 }
 .note-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--gs-yellow);
+  background: transparent;
+  border: 1px solid var(--secondary);
+  font-size: 1.4rem;
+  padding: 0.4em;
+  border-radius: 8px;
+  color: var(--secondary);
 }
 .note-btn.active {
-  color: var(--gs-red);
+  background: var(--primary);
+  color: #fff;
 }
 .note-btn.inactive {
   opacity: 0.6;
@@ -121,7 +126,7 @@
   height: 3rem;
   transition: transform 0.2s;
   border-radius: 8px;
-  background: var(--gs-red);
+  background: var(--primary);
   color: #fff;
   border: none;
 }
@@ -156,6 +161,14 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+}
+.controls button,
+.end-controls button {
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .end-controls {
@@ -193,6 +206,12 @@
   transform: translate(-50%, -50%);
 }
 
+.note-mode .pen-cursor {
+  border: 2px solid var(--secondary);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
 @media (min-width: 1024px) {
   .board td {
     width: 4rem;
@@ -207,12 +226,13 @@
   }
 }
 
+
 .block0,
 .block2,
 .block4,
 .block6,
 .block8 {
-  background: rgba(253, 185, 18, 0.3);
+  background: var(--block-light);
   color: #000;
 }
 
@@ -220,7 +240,7 @@
 .block3,
 .block5,
 .block7 {
-  background: rgba(169, 4, 50, 0.5);
+  background: var(--block-dark);
   color: #fff;
 }
 

@@ -354,21 +354,27 @@ export default function SudokuGame({ difficulty, onBack, version }) {
           ))}
         </tbody>
       </table>
-      <div className="controls">
-        <button
-          className={`note-btn${noteMode ? ' active' : ' inactive'}`}
-          onClick={() => setNoteMode(!noteMode)}
-        >
-          ✏️
-        </button>
-        {superMode && (
-          <button onClick={fixAllNotes}>Notları Düzelt</button>
-        )}
-        <button onClick={giveHint} disabled={!superMode && hintsLeft <= 0}>
-          Ipucu ({superMode ? '∞' : hintsLeft})
-        </button>
-        <button onClick={onBack}>Ana Sayfa / Ayarlar</button>
-      </div>
+      {!finished && (
+        <div className="controls">
+          <button
+            className={`icon-btn note-btn${noteMode ? ' active' : ' inactive'}`}
+            onClick={() => setNoteMode(!noteMode)}
+          >
+            ✏️
+          </button>
+          {superMode && (
+            <button className="icon-btn" onClick={fixAllNotes}>📝</button>
+          )}
+          <button
+            className="icon-btn"
+            onClick={giveHint}
+            disabled={!superMode && hintsLeft <= 0}
+          >
+            💡 ({superMode ? '∞' : hintsLeft})
+          </button>
+          <button className="icon-btn" onClick={onBack}>🏠</button>
+        </div>
+      )}
       {activeCell && (
         <div className="digit-pad">
           {(() => {
@@ -395,8 +401,8 @@ export default function SudokuGame({ difficulty, onBack, version }) {
       {finished && <p className="status">Tebrikler!</p>}
       {finished && (
         <div className="end-controls">
-          <button onClick={restartGame}>Yeniden Başla</button>
-          <button onClick={onBack}>Ana Sayfa</button>
+          <button className="icon-btn" onClick={restartGame}>🔄</button>
+          <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
       )}
       {noteMode && (
@@ -404,7 +410,7 @@ export default function SudokuGame({ difficulty, onBack, version }) {
           src={pen}
           alt="pen"
           className="pen-cursor"
-          style={{ left: mouse.x + 8, top: mouse.y + 8 }}
+          style={{ left: mouse.x, top: mouse.y }}
         />
       )}
       <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
