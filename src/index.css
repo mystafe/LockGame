@@ -5,6 +5,10 @@
 
   --gs-red: #a90432;
   --gs-yellow: #fdb913;
+  --primary: var(--gs-red);
+  --secondary: var(--gs-yellow);
+  --block-light: rgba(253, 185, 18, 0.3);
+  --block-dark: rgba(169, 4, 50, 0.5);
 
   color-scheme: light dark;
   color: #f0f0f0;
@@ -31,8 +35,51 @@ body {
   align-items: center;
   justify-content: center;
   min-width: 320px;
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--gs-red), var(--gs-yellow));
+  min-height: 100dvh;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.palette-gs {
+  --primary: var(--gs-red);
+  --secondary: var(--gs-yellow);
+  --block-light: rgba(253, 185, 18, 0.3);
+  --block-dark: rgba(169, 4, 50, 0.5);
+}
+
+.palette-bjk {
+  --primary: #000000;
+  --secondary: #ffffff;
+  --block-light: rgba(255, 255, 255, 0.3);
+  --block-dark: rgba(0, 0, 0, 0.5);
+}
+
+.palette-fb {
+  --primary: #0b5aa1;
+  --secondary: #ffcb00;
+  --block-light: rgba(255, 203, 0, 0.3);
+  --block-dark: rgba(11, 90, 161, 0.5);
+}
+
+.palette-ts {
+  --primary: #7d1a3b;
+  --secondary: #4e97a8;
+  --block-light: rgba(78, 151, 168, 0.3);
+  --block-dark: rgba(125, 26, 59, 0.5);
+}
+
+.palette-tr {
+  --primary: #e30a17;
+  --secondary: #ffffff;
+  --block-light: rgba(255, 255, 255, 0.3);
+  --block-dark: rgba(227, 10, 23, 0.5);
+}
+
+.theme-glass {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+}
+
+.theme-metal {
+  background: linear-gradient(135deg, #4b4b4b, #b5b5b5);
 }
 
 h1 {
@@ -47,13 +94,31 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--gs-red);
+  background-color: var(--primary);
   color: #fff;
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
+.icon-btn {
+  padding: 0.4em;
+  font-size: 1.4rem;
+  background-color: var(--primary);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  border: 1px solid var(--secondary);
+}
 button:hover {
-  border-color: var(--gs-yellow);
+  border-color: var(--secondary);
 }
 button:focus,
 button:focus-visible {
@@ -69,7 +134,7 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: var(--gs-red);
+    background-color: var(--primary);
     color: #fff;
   }
 }
