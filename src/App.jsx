@@ -34,6 +34,8 @@ export default function App() {
   const [mode, setMode] = useState('easy') // 'easy' or 'challenge'
   const [difficulty, setDifficulty] = useState('easy') // lock difficulty
   const [sudokuDifficulty, setSudokuDifficulty] = useState('hard')
+  const [theme, setTheme] = useState('glass')
+  const [palette, setPalette] = useState('gs')
 
   const [codeLength, setCodeLength] = useState(4)
   const [maxAttempts, setMaxAttempts] = useState(10)
@@ -41,6 +43,10 @@ export default function App() {
   const [guess, setGuess] = useState([])
   const [attempts, setAttempts] = useState([])
   const [status, setStatus] = useState('')
+
+  useEffect(() => {
+    document.body.className = `theme-${theme} palette-${palette}`
+  }, [theme, palette])
 
   const finished = status !== ''
 
@@ -144,7 +150,7 @@ export default function App() {
   if (screen === 'start') {
     return (
       <div className="app">
-        <h1>Oyun Seçimi</h1>
+        <h1>MiniGames</h1>
         <div className="options">
           <div>
             <label>Oyun: </label>
@@ -182,6 +188,23 @@ export default function App() {
               </select>
             </div>
           )}
+          <div>
+            <label>Tema: </label>
+            <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+              <option value="glass">Bulanık Cam</option>
+              <option value="metal">Metal</option>
+            </select>
+          </div>
+          <div>
+            <label>Renk Paleti: </label>
+            <select value={palette} onChange={(e) => setPalette(e.target.value)}>
+              <option value="gs">Galatasaray</option>
+              <option value="bjk">Beşiktaş</option>
+              <option value="fb">Fenerbahçe</option>
+              <option value="ts">Trabzon</option>
+              <option value="tr">Türkiye</option>
+            </select>
+          </div>
           <button onClick={startGame}>Başla</button>
         </div>
         <footer className="footer">Developed by Mustafa Evleksiz v{version}</footer>
@@ -212,8 +235,8 @@ export default function App() {
       </div>
       <div className="lock-controls">
         {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
-        {finished && <button onClick={handleRestart}>Yeniden Başlat</button>}
-        <button onClick={handleRestart}>Ana Sayfa</button>
+        {finished && <button className="icon-btn" onClick={handleRestart}>🔄</button>}
+        <button className="icon-btn" onClick={handleRestart}>🏠</button>
       </div>
       <p>Kalan Hak: {maxAttempts - attempts.length}</p>
       {status && <p className="status">{status}</p>}
