@@ -24,3 +24,37 @@
   border: none;
   color: inherit;
 }
+
+.block-cell {
+  background: #333;
+}
+
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+.info-bar .best {
+  text-align: right;
+  flex: 1;
+}
+
+.controls {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.end-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.status {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}

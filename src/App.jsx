@@ -35,20 +35,22 @@ export default function App() {
   const [mode, setMode] = useState('easy') // 'easy' or 'challenge'
   const [difficulty, setDifficulty] = useState('easy') // lock difficulty
   const [sudokuDifficulty, setSudokuDifficulty] = useState('hard')
-  const themes = [
-    'broken',
-    'earth',
-    'fabric',
-    'forest',
-    'glass',
-    'lime',
-    'metal',
-    'ocean',
-    'pastel',
-    'watercolor',
-    'wood',
-  ]
-  const randomTheme = () => themes[Math.floor(Math.random() * themes.length)]
+  const [kakuroDifficulty, setKakuroDifficulty] = useState('easy')
+  const themeOptions = [
+    { value: 'broken', label: 'Kırık Cam' },
+    { value: 'earth', label: 'Toprak' },
+    { value: 'fabric', label: 'Kumaş' },
+    { value: 'forest', label: 'Orman' },
+    { value: 'glass', label: 'Bulanık Cam' },
+    { value: 'lime', label: 'Kireç' },
+    { value: 'metal', label: 'Metal' },
+    { value: 'ocean', label: 'Okyanus' },
+    { value: 'pastel', label: 'Pastel' },
+    { value: 'watercolor', label: 'Sulu Boya' },
+    { value: 'wood', label: 'Ahşap' },
+  ].sort((a, b) => a.label.localeCompare(b.label, 'tr'))
+  const randomTheme = () =>
+    themeOptions[Math.floor(Math.random() * themeOptions.length)].value
 
   const [theme, setTheme] = useState(randomTheme())
   const [palette, setPalette] = useState('gs')
@@ -272,20 +274,22 @@ export default function App() {
               </select>
             </div>
           )}
+          {gameType === 'kakuro' && (
+            <div>
+              <label>Zorluk: </label>
+              <select value={kakuroDifficulty} onChange={(e) => setKakuroDifficulty(e.target.value)}>
+                <option value="easy">3x3 Kolay</option>
+                <option value="medium">4x4 Orta</option>
+                <option value="hard">5x5 Zor</option>
+              </select>
+            </div>
+          )}
           <div>
             <label>Tema: </label>
             <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-              <option value="broken">Kırık Cam</option>
-              <option value="earth">Toprak</option>
-              <option value="fabric">Kumaş</option>
-              <option value="forest">Orman</option>
-              <option value="glass">Bulanık Cam</option>
-              <option value="lime">Kireç</option>
-              <option value="metal">Metal</option>
-              <option value="ocean">Okyanus</option>
-              <option value="pastel">Pastel</option>
-              <option value="watercolor">Sulu Boya</option>
-              <option value="wood">Ahşap</option>
+              {themeOptions.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
             </select>
           </div>
           <div>
@@ -315,7 +319,7 @@ export default function App() {
   if (screen === 'kakuro') {
     return (
       <div className="app kakuro-app">
-        <KakuroGame onBack={handleRestart} />
+        <KakuroGame difficulty={kakuroDifficulty} onBack={handleRestart} />
       </div>
     )
   }
