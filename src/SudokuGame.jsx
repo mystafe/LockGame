@@ -446,7 +446,7 @@ export default function SudokuGame({ difficulty, onBack }) {
             <button className="icon-btn" onClick={fixAllNotes}>📝</button>
           )}
           <button
-            className="icon-btn"
+            className="icon-btn hint-btn"
             onClick={giveHint}
             disabled={!superMode && hintsLeft <= 0}
           >

@@ -374,7 +374,9 @@ export default function App() {
       <div className="lock-controls">
         {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
         {!finished && (superMode || hintsLeft > 0) && (
-          <button className="icon-btn" onClick={useHint}>💡 ({superMode ? '∞' : hintsLeft})</button>
+          <button className="icon-btn hint-btn" onClick={useHint}>
+            💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
+          </button>
         )}
         {finished && (
           <button className="icon-btn" onClick={restartLockGame}>🔄</button>

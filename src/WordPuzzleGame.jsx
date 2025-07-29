@@ -10,6 +10,7 @@ export default function WordPuzzleGame({ onBack }) {
   ].sort()
 
   const words = [
+    // 4-6 harfli kelimeler
     'akide',
     'bilet',
     'cihan',
@@ -39,14 +40,32 @@ export default function WordPuzzleGame({ onBack }) {
     'kalem',
     'limon',
     'mektup',
-    'ormanlar',
-    'piramit',
     'renk',
-    'sarmasik',
     'toprak',
     'uzay',
     'yildiz',
     'zaman',
+    // eklenen kelimeler
+    'kitap',
+    'deniz',
+    'sahil',
+    'daglar',
+    'ceviz',
+    'balik',
+    'meyve',
+    'yaprak',
+    'kumsal',
+    'tarla',
+    'kaynak',
+    'tarih',
+    'perde',
+    'robot',
+    'beyaz',
+    'matem',
+    'ustun',
+    'kaleci',
+    'omlet',
+    'palet',
   ]
 
   const randomWord = () => words[Math.floor(Math.random() * words.length)]
@@ -118,7 +137,12 @@ export default function WordPuzzleGame({ onBack }) {
 
   const handleLetter = l => {
     if (finished || guess.length >= wordLen) return
-    setGuess(g => (g + l).slice(0, wordLen))
+    const newGuess = (guess + l).slice(0, wordLen)
+    if (newGuess.length === wordLen) {
+      submitGuess(newGuess)
+    } else {
+      setGuess(newGuess)
+    }
   }
 
   const handleDelete = () => {
@@ -126,12 +150,12 @@ export default function WordPuzzleGame({ onBack }) {
     setGuess(g => g.slice(0, -1))
   }
 
-  const handleSubmit = () => {
-    if (finished || guess.length !== wordLen) return
-    const colors = evaluateColors(guess)
-    const newAttempts = [...attempts, { guess, colors }]
+  const submitGuess = g => {
+    if (finished || g.length !== wordLen) return
+    const colors = evaluateColors(g)
+    const newAttempts = [...attempts, { guess: g, colors }]
     setAttempts(newAttempts)
-    if (guess === secret) {
+    if (g === secret) {
       setStatus('Tebrikler!')
       if (bestScore === null || newAttempts.length < bestScore) {
         setBestScore(newAttempts.length)
@@ -142,6 +166,8 @@ export default function WordPuzzleGame({ onBack }) {
     }
     setGuess('')
   }
+
+  const handleSubmit = () => submitGuess(guess)
 
   const giveHint = () => {
     if (finished || (!superMode && hintsLeft <= 0)) return
@@ -174,21 +200,20 @@ export default function WordPuzzleGame({ onBack }) {
         Kelime Bulmaca
         <Tooltip info="Harfleri kullanarak anlamli kelimeler olusturun." tips={tricks} />
       </h1>
+      <div className="info-bar">
+        <span>Tahmin: {attempts.length}/6</span>
+        <span className="best">{bestScore !== null ? bestScore : '--'}</span>
+      </div>
       <p className="word-length">
         {Array.from({ length: wordLen })
           .map((_, i) => (guess[i] ? guess[i] : '_'))
           .join(' ')}
       </p>
       <div className="controls">
-        {!finished && (
-          <>
-            <button onClick={handleSubmit}>Tahmin</button>
-            {(superMode || hintsLeft > 0) && (
-              <button className="icon-btn" onClick={giveHint}>
-                💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
-              </button>
-            )}
-          </>
+        {!finished && (superMode || hintsLeft > 0) && (
+          <button className="icon-btn hint-btn" onClick={giveHint}>
+            💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
+          </button>
         )}
         {finished && (
           <button className="icon-btn" onClick={restart}>
@@ -216,7 +241,6 @@ export default function WordPuzzleGame({ onBack }) {
           {'<'}
         </button>
       </div>
-      {bestScore !== null && <p>Best Score: {bestScore}</p>}
       {status && <p className="status">{status}</p>}
       <div className="history">
         {attempts.map((a, idx) => (
