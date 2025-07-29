@@ -30,6 +30,10 @@
 .letter-pad {
   margin-top: 0.5rem;
   width: 100%;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
   border-radius: 10px;
@@ -44,9 +48,9 @@
   gap: 0.25rem;
 }
 
-.letter-row.row1 { grid-template-columns: repeat(10, 1fr); }
-.letter-row.row2 { grid-template-columns: repeat(9, 1fr); }
-.letter-row.row3 { grid-template-columns: repeat(8, 1fr); }
+.letter-row.row1 { grid-template-columns: repeat(10, minmax(1.8rem, 1fr)); }
+.letter-row.row2 { grid-template-columns: repeat(9, minmax(1.8rem, 1fr)); }
+.letter-row.row3 { grid-template-columns: repeat(8, minmax(1.8rem, 1fr)); }
 
 .letter-pad button {
   width: 100%;
