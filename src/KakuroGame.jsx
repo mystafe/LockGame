@@ -358,8 +358,12 @@ export default function KakuroGame({ difficulty, onBack }) {
                 }
                 const pre = prefillSet.has(pos)
                 const wrong = errors[pos]
+                const cellClass = [
+                  wrong ? 'wrong' : '',
+                  activeCell && activeCell.r === r && activeCell.c === c ? 'active-cell' : ''
+                ].join(' ').trim()
                 return (
-                  <td key={c} className={wrong ? 'wrong' : ''}>
+                  <td key={c} className={cellClass}>
                     <input
                       data-pos={`${r}-${c}`}
                       value={val}
@@ -406,11 +410,11 @@ export default function KakuroGame({ difficulty, onBack }) {
             <button className="icon-btn" onClick={fixAllNotes}>📝</button>
           )}
           <button
-            className="icon-btn"
+            className="icon-btn hint-btn"
             onClick={giveHint}
             disabled={!superMode && hintsLeft <= 0}
           >
-            💡 ({superMode ? '∞' : hintsLeft})
+            💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
           </button>
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
