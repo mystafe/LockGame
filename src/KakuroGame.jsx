@@ -103,6 +103,8 @@ export default function KakuroGame({ difficulty, onBack }) {
 
   const [board, setBoard] = useState(emptyBoard())
   const [hintsLeft, setHintsLeft] = useState(cfg.hints)
+  const [superMode, setSuperMode] = useState(false)
+  const [headerClicks, setHeaderClicks] = useState(0)
   const [noteMode, setNoteMode] = useState(false)
   const [notes, setNotes] = useState(
     solution.map(row => row.map(() => []))
@@ -119,6 +121,19 @@ export default function KakuroGame({ difficulty, onBack }) {
       blockSet.has(`${r}-${c}`) || parseInt(v, 10) === solution[r][c]
     )
   )
+
+  const handleHeaderClick = () => {
+    const count = headerClicks + 1
+    if (count >= 5) {
+      if (!superMode) {
+        setSuperMode(true)
+        setHintsLeft(Infinity)
+      }
+      setHeaderClicks(0)
+    } else {
+      setHeaderClicks(count)
+    }
+  }
 
   const handleChange = (r, c, key) => {
     if (finished) return
@@ -175,7 +190,7 @@ export default function KakuroGame({ difficulty, onBack }) {
   }, [finished, bestTime, difficulty, startTime])
 
   const giveHint = () => {
-    if (hintsLeft <= 0 || finished) return
+    if ((!superMode && hintsLeft <= 0) || finished) return
     const cells = []
     for (let r = 0; r < cfg.size; r++) {
       for (let c = 0; c < cfg.size; c++) {
@@ -196,7 +211,7 @@ export default function KakuroGame({ difficulty, onBack }) {
     newNotes[r][c] = []
     setNotes(newNotes)
     setBoard(next)
-    setHintsLeft(hintsLeft - 1)
+    if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
   const restartGame = () => {
@@ -218,7 +233,7 @@ export default function KakuroGame({ difficulty, onBack }) {
       )
     )
     setNotes(newSol.map(row => row.map(() => [])))
-    setHintsLeft(cfg.hints)
+    setHintsLeft(superMode ? Infinity : cfg.hints)
     setStartTime(Date.now())
     setElapsed(0)
   }
@@ -233,7 +248,7 @@ export default function KakuroGame({ difficulty, onBack }) {
 
   return (
     <div className="kakuro">
-      <h1>
+      <h1 onClick={handleHeaderClick}>
         Kakuro
         <Tooltip info="Satir ve sutun toplamina gore kareleri doldurun." tips={tricks} />
       </h1>
@@ -299,9 +314,9 @@ export default function KakuroGame({ difficulty, onBack }) {
           <button
             className="icon-btn"
             onClick={giveHint}
-            disabled={hintsLeft <= 0}
+            disabled={!superMode && hintsLeft <= 0}
           >
-            💡 ({hintsLeft})
+            💡 ({superMode ? '∞' : hintsLeft})
           </button>
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>

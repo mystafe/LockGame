@@ -63,6 +63,8 @@ export default function App() {
   const [status, setStatus] = useState('')
   const [bestScore, setBestScore] = useState(null)
   const [hintsLeft, setHintsLeft] = useState(0)
+  const [superMode, setSuperMode] = useState(false)
+  const [headerClicks, setHeaderClicks] = useState(0)
   const [revealed, setRevealed] = useState([])
   const lockTricks = [
     'Ayni rakamdan birden fazla kullanabilirsiniz',
@@ -96,7 +98,7 @@ export default function App() {
       setGuess(Array(len).fill(0))
       setAttempts([])
       setStatus('')
-      setHintsLeft(difficulty === 'hard' ? 0 : 1)
+      setHintsLeft(superMode ? Infinity : difficulty === 'hard' ? 0 : 1)
       setRevealed(Array(len).fill(false))
       setScreen('play')
     } else {
@@ -157,6 +159,19 @@ export default function App() {
     return { correct, misplaced, wrong }
   }
 
+  const handleHeaderClick = () => {
+    const count = headerClicks + 1
+    if (count >= 5) {
+      if (!superMode) {
+        setSuperMode(true)
+        setHintsLeft(Infinity)
+      }
+      setHeaderClicks(0)
+    } else {
+      setHeaderClicks(count)
+    }
+  }
+
   const handleSubmit = () => {
     if (finished) return
     if (mode === 'easy') {
@@ -206,12 +221,12 @@ export default function App() {
     setGuess(Array(len).fill(0))
     setAttempts([])
     setStatus('')
-    setHintsLeft(difficulty === 'hard' ? 0 : 1)
+    setHintsLeft(superMode ? Infinity : difficulty === 'hard' ? 0 : 1)
     setRevealed(Array(len).fill(false))
   }
 
   const useHint = () => {
-    if (hintsLeft <= 0) return
+    if (!superMode && hintsLeft <= 0) return
     const choices = revealed
       .map((r, i) => (!r ? i : null))
       .filter(i => i !== null)
@@ -223,7 +238,7 @@ export default function App() {
     const rev = [...revealed]
     rev[idx] = true
     setRevealed(rev)
-    setHintsLeft(hintsLeft - 1)
+    if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
   const handleRestart = () => {
@@ -342,7 +357,7 @@ export default function App() {
 
     return (
       <div className="app">
-        <h1 className="lock-title">
+        <h1 className="lock-title" onClick={handleHeaderClick}>
           {mode === 'easy' ? 'LockGame Casual' : 'Lock Game Challenge'}
           <Tooltip info="Rakamlari oklarla degistirip dogru sifreyi bulmaya calisin." tips={lockTricks} />
         </h1>
@@ -358,8 +373,8 @@ export default function App() {
       </div>
       <div className="lock-controls">
         {!finished && <button onClick={handleSubmit}>Tahmin Et</button>}
-        {!finished && hintsLeft > 0 && (
-          <button className="icon-btn" onClick={useHint}>💡 ({hintsLeft})</button>
+        {!finished && (superMode || hintsLeft > 0) && (
+          <button className="icon-btn" onClick={useHint}>💡 ({superMode ? '∞' : hintsLeft})</button>
         )}
         {finished && (
           <button className="icon-btn" onClick={restartLockGame}>🔄</button>
