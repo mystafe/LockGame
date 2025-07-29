@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import './Kakuro.css'
 import Tooltip from './Tooltip.jsx'
 
+const isMobile = /Mobi|Android/i.test(navigator.userAgent)
+
 export default function KakuroGame({ difficulty, onBack, superMode }) {
   const tricks = [
     'Ayni satirda tekrar etmeyin',
@@ -355,7 +357,7 @@ export default function KakuroGame({ difficulty, onBack, superMode }) {
                       data-pos={`${r}-${c}`}
                       value={val}
                       readOnly
-                      inputMode="none"
+                      inputMode={isMobile ? 'none' : undefined}
                       disabled={pre}
                       onFocus={() => setActiveCell({ r, c })}
                       onBlur={e => {
@@ -406,7 +408,7 @@ export default function KakuroGame({ difficulty, onBack, superMode }) {
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
       )}
-      {!finished && (
+      {!finished && isMobile && (
         <div className="digit-pad">
           {Array.from({ length: 9 }, (_, i) => i + 1).map(n => (
             <button
