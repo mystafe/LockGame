@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './WordPuzzle.css'
 import Tooltip from './Tooltip.jsx'
 
@@ -10,7 +10,6 @@ export default function WordPuzzleGame({ onBack }) {
   ].sort()
 
   const words = [
-    'ak',
     'akide',
     'bilet',
     'cihan',
@@ -19,7 +18,6 @@ export default function WordPuzzleGame({ onBack }) {
     'fidan',
     'gizem',
     'hayal',
-    'is',
     'islem',
     'kuzey',
     'lamba',
@@ -34,7 +32,6 @@ export default function WordPuzzleGame({ onBack }) {
     'yolcu',
     'zengin',
     'balon',
-    'dag',
     'eller',
     'gunes',
     'hayvan',
@@ -69,6 +66,22 @@ export default function WordPuzzleGame({ onBack }) {
 
   const finished = status !== ''
 
+  useEffect(() => {
+    const handleKey = e => {
+      if (finished) return
+      const k = e.key.toLowerCase()
+      if (/^[a-z]$/.test(k)) {
+        handleLetter(k)
+      } else if (k === 'backspace') {
+        handleDelete()
+      } else if (k === 'enter') {
+        handleSubmit()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [finished, wordLen])
+
   const handleHeaderClick = () => {
     const count = headerClicks + 1
     if (count >= 5) {
@@ -101,6 +114,16 @@ export default function WordPuzzleGame({ onBack }) {
       }
     }
     return res
+  }
+
+  const handleLetter = l => {
+    if (finished || guess.length >= wordLen) return
+    setGuess(g => (g + l).slice(0, wordLen))
+  }
+
+  const handleDelete = () => {
+    if (finished) return
+    setGuess(g => g.slice(0, -1))
   }
 
   const handleSubmit = () => {
@@ -152,20 +175,17 @@ export default function WordPuzzleGame({ onBack }) {
         <Tooltip info="Harfleri kullanarak anlamli kelimeler olusturun." tips={tricks} />
       </h1>
       <p className="word-length">
-        {Array.from({ length: wordLen }).map(() => '_').join(' ')}
+        {Array.from({ length: wordLen })
+          .map((_, i) => (guess[i] ? guess[i] : '_'))
+          .join(' ')}
       </p>
       <div className="controls">
         {!finished && (
           <>
-            <input
-              value={guess}
-              onChange={e => setGuess(e.target.value.toLowerCase())}
-              maxLength={wordLen}
-            />
             <button onClick={handleSubmit}>Tahmin</button>
             {(superMode || hintsLeft > 0) && (
               <button className="icon-btn" onClick={giveHint}>
-                💡 ({superMode ? '∞' : hintsLeft})
+                💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
               </button>
             )}
           </>
@@ -176,6 +196,25 @@ export default function WordPuzzleGame({ onBack }) {
           </button>
         )}
         <button className="icon-btn" onClick={onBack}>🏠</button>
+      </div>
+      <div className="letter-pad">
+        {Array.from('abcdefghijklmnopqrstuvwxyz').map(ch => (
+          <button
+            key={ch}
+            onPointerDown={e => e.preventDefault()}
+            disabled={finished || guess.length >= wordLen}
+            onClick={() => handleLetter(ch)}
+          >
+            {ch}
+          </button>
+        ))}
+        <button
+          onPointerDown={e => e.preventDefault()}
+          disabled={finished || guess.length === 0}
+          onClick={handleDelete}
+        >
+          {'<'}
+        </button>
       </div>
       {bestScore !== null && <p>Best Score: {bestScore}</p>}
       {status && <p className="status">{status}</p>}
