@@ -9,6 +9,9 @@
   justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }
 
 .controls input {
@@ -45,4 +48,10 @@
 .letter.gray {
   background: #999;
   color: #fff;
+}
+
+.word-length {
+  margin-top: 0.25rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.3rem;
 }
