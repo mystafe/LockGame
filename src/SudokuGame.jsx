@@ -75,7 +75,7 @@ const data = {
   }
 }
 
-export default function SudokuGame({ difficulty, onBack }) {
+export default function SudokuGame({ difficulty, onBack, superMode }) {
   const tricks = [
     'Bos hucrelerde olasi rakamlari not alin',
     'Satir ve sutunlari tarayarak eksik rakamlari bulun',
@@ -96,8 +96,8 @@ export default function SudokuGame({ difficulty, onBack }) {
   }
   const [rand, setRand] = useState(() => createRandomData())
   const [board, setBoard] = useState(rand.puzzle.map(r => [...r]))
-  const [hintsLeft, setHintsLeft] = useState(cfg.hints)
-  const [superMode, setSuperMode] = useState(false)
+  const [hintsLeft, setHintsLeft] = useState(superMode ? Infinity : cfg.hints)
+  // superMode prop controls unlimited hints
   const [mistakes, setMistakes] = useState(0)
   const [noteMode, setNoteMode] = useState(false)
   const [notes, setNotes] = useState(
@@ -105,7 +105,6 @@ export default function SudokuGame({ difficulty, onBack }) {
   )
   const [activeCell, setActiveCell] = useState(null)
   const [errors, setErrors] = useState({})
-  const [headerClicks, setHeaderClicks] = useState(0)
   const [startTime, setStartTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [bestTime, setBestTime] = useState(() => {
@@ -273,32 +272,6 @@ export default function SudokuGame({ difficulty, onBack }) {
     if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
-  const giveFreeHint = () => {
-    if (finished) return
-    const empties = []
-    for (let r = 0; r < cfg.size; r++) {
-      for (let c = 0; c < cfg.size; c++) {
-        if (board[r][c] === 0) empties.push([r, c])
-      }
-    }
-    if (empties.length === 0) return
-    const [r, c] = empties[Math.floor(Math.random() * empties.length)]
-    const newBoard = board.map(row => [...row])
-    newBoard[r][c] = rand.solution[r][c]
-    const newPuzzle = rand.puzzle.map(row => [...row])
-    newPuzzle[r][c] = rand.solution[r][c]
-    setRand({ ...rand, puzzle: newPuzzle })
-    let newNotes = notes.map(row => row.map(n => [...n]))
-    newNotes[r][c] = []
-    newNotes = removeNotesForNumber(r, c, rand.solution[r][c], newNotes)
-    setNotes(newNotes)
-    setBoard(newBoard)
-    setErrors(prev => {
-      const e = { ...prev }
-      delete e[`${r}-${c}`]
-      return e
-    })
-  }
 
   const getAllowedDigits = (r, c) => {
     if (board[r][c] !== 0 || rand.puzzle[r][c] !== 0) return []
@@ -326,21 +299,6 @@ export default function SudokuGame({ difficulty, onBack }) {
     setNotes(newNotes)
   }
 
-
-  const handleHeaderClick = () => {
-    const count = headerClicks + 1
-    if (count >= 5) {
-      if (!superMode) {
-        setSuperMode(true)
-        setHintsLeft(Infinity)
-      }
-      giveFreeHint()
-      setHeaderClicks(0)
-    } else {
-      setHeaderClicks(count)
-    }
-  }
-
   const restartGame = () => {
     const newData = createRandomData()
     setRand(newData)
@@ -363,7 +321,7 @@ export default function SudokuGame({ difficulty, onBack }) {
 
   return (
     <div className={`sudoku${finished ? ' finished' : ''}`}>
-      <h1 onClick={handleHeaderClick}>
+      <h1>
         Sudoku
         <Tooltip info="Her satir, sutun ve blokta 1-9 arasi rakamlar tekrarsiz olmali." tips={tricks} />
       </h1>

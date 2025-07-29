@@ -1,0 +1,91 @@
+.nonogram {
+  text-align: center;
+  animation: fadein 0.5s ease-in;
+}
+
+.nonogram-board {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.nonogram-board th,
+.nonogram-board td {
+  border: 1px solid #333;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 0 3px #000;
+}
+
+.nonogram-board th {
+  background: rgba(0,0,0,0.3);
+  font-size: 0.8rem;
+}
+
+.nonogram-board td {
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  position: relative;
+}
+
+.nonogram-board td.filled {
+  background: var(--block-dark);
+}
+
+.nonogram-board td.error {
+  background: #e53935;
+}
+
+.nonogram-board td.cross::after {
+  content: '✖';
+  color: #e53935;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-hints {
+  vertical-align: bottom;
+  height: 4rem;
+}
+
+.col-hints div {
+  line-height: 1rem;
+}
+
+.row-hints {
+  white-space: nowrap;
+  padding-right: 0.2rem;
+}
+
+.nonogram-controls {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+}
+
+.status {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+.info-bar .best {
+  text-align: right;
+}
