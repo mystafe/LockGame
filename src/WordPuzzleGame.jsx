@@ -38,6 +38,8 @@ export default function WordPuzzleGame({ onBack }) {
   const [guess, setGuess] = useState('')
   const [attempts, setAttempts] = useState([])
   const [hintsLeft, setHintsLeft] = useState(1)
+  const [superMode, setSuperMode] = useState(false)
+  const [headerClicks, setHeaderClicks] = useState(0)
   const [status, setStatus] = useState('')
   const [bestScore, setBestScore] = useState(() => {
     const s = localStorage.getItem('wordBest')
@@ -46,6 +48,19 @@ export default function WordPuzzleGame({ onBack }) {
   const wordLen = secret.length
 
   const finished = status !== ''
+
+  const handleHeaderClick = () => {
+    const count = headerClicks + 1
+    if (count >= 5) {
+      if (!superMode) {
+        setSuperMode(true)
+        setHintsLeft(Infinity)
+      }
+      setHeaderClicks(0)
+    } else {
+      setHeaderClicks(count)
+    }
+  }
 
   const evaluateColors = (g) => {
     const res = Array(wordLen).fill('gray')
@@ -86,7 +101,7 @@ export default function WordPuzzleGame({ onBack }) {
   }
 
   const giveHint = () => {
-    if (finished || hintsLeft <= 0) return
+    if (finished || (!superMode && hintsLeft <= 0)) return
     const unrevealed = []
     for (let i = 0; i < wordLen; i++) {
       if (!attempts.some(a => a.guess[i] === secret[i])) {
@@ -98,7 +113,7 @@ export default function WordPuzzleGame({ onBack }) {
     const arr = guess.padEnd(wordLen, ' ').split('')
     arr[idx] = secret[idx]
     setGuess(arr.join('').trimEnd())
-    setHintsLeft(hintsLeft - 1)
+    if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
   const restart = () => {
@@ -106,13 +121,13 @@ export default function WordPuzzleGame({ onBack }) {
     setSecret(w)
     setGuess('')
     setAttempts([])
-    setHintsLeft(1)
+    setHintsLeft(superMode ? Infinity : 1)
     setStatus('')
   }
 
   return (
     <div className="word-puzzle">
-      <h1>
+      <h1 onClick={handleHeaderClick}>
         Kelime Bulmaca
         <Tooltip info="Harfleri kullanarak anlamli kelimeler olusturun." tips={tricks} />
       </h1>
@@ -125,9 +140,9 @@ export default function WordPuzzleGame({ onBack }) {
               maxLength={wordLen}
             />
             <button onClick={handleSubmit}>Tahmin</button>
-            {hintsLeft > 0 && (
+            {(superMode || hintsLeft > 0) && (
               <button className="icon-btn" onClick={giveHint}>
-                💡 ({hintsLeft})
+                💡 ({superMode ? '∞' : hintsLeft})
               </button>
             )}
           </>
