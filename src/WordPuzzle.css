@@ -8,6 +8,19 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.controls input {
+  padding: 0.4rem;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .controls input {
+    flex: 1 1 100%;
+  }
 }
 
 .letter {

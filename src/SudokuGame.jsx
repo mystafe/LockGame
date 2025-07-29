@@ -455,16 +455,18 @@ export default function SudokuGame({ difficulty, onBack }) {
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
       )}
-      {activeCell && (
+      {!finished && (
         <div className="digit-pad">
           {(() => {
-            const allowed = getAllowedDigits(activeCell.r, activeCell.c)
+            const allowed = activeCell ? getAllowedDigits(activeCell.r, activeCell.c) : []
             return Array.from({ length: cfg.size }, (_, i) => i + 1).map(n => (
               <button
                 key={n}
                 onPointerDown={e => e.preventDefault()}
-                disabled={!allowed.includes(n)}
-                onClick={() => handleChange(activeCell.r, activeCell.c, n)}
+                disabled={!activeCell || !allowed.includes(n)}
+                onClick={() =>
+                  activeCell && handleChange(activeCell.r, activeCell.c, n)
+                }
               >
                 {n}
               </button>
@@ -472,7 +474,8 @@ export default function SudokuGame({ difficulty, onBack }) {
           })()}
           <button
             onPointerDown={e => e.preventDefault()}
-            onClick={() => handleChange(activeCell.r, activeCell.c, '')}
+            disabled={!activeCell}
+            onClick={() => activeCell && handleChange(activeCell.r, activeCell.c, '')}
           >
             {'<'}
           </button>

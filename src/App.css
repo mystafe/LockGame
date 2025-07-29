@@ -1,7 +1,7 @@
 .app {
   text-align: center;
   font-family: sans-serif;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -100,12 +100,12 @@
 
 .sudoku-app {
   justify-content: flex-start;
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 .kakuro-app {
   justify-content: flex-start;
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 @media (max-width: 600px) {
