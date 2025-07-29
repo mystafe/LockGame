@@ -125,9 +125,6 @@
   background: transparent;
 }
 
-.hint-count {
-  font-size: 0.7em;
-}
 .active-cell {
   outline: 2px solid #2196f3;
   animation: pulse 1s infinite;

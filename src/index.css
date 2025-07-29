@@ -157,6 +157,13 @@ button {
   align-items: center;
   justify-content: center;
 }
+.hint-btn {
+  min-width: 3.4rem;
+}
+.hint-count {
+  font-size: 0.7em;
+  margin-left: 0.2rem;
+}
 
 .icon-btn:hover {
   border: 1px solid var(--secondary);
