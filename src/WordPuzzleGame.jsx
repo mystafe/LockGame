@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import './WordPuzzle.css'
 import Tooltip from './Tooltip.jsx'
 
+const isMobile = /Mobi|Android/i.test(navigator.userAgent)
+
 export default function WordPuzzleGame({ onBack, superMode }) {
   const tricks = [
     'Harf dagilimini inceleyin',
@@ -208,25 +210,37 @@ export default function WordPuzzleGame({ onBack, superMode }) {
         )}
         <button className="icon-btn" onClick={onBack}>🏠</button>
       </div>
-      <div className="letter-pad">
-        {Array.from('abcdefghijklmnopqrstuvwxyz').map(ch => (
-          <button
-            key={ch}
-            onPointerDown={e => e.preventDefault()}
-            disabled={finished || guess.length >= wordLen}
-            onClick={() => handleLetter(ch)}
-          >
-            {ch}
-          </button>
-        ))}
-        <button
-          onPointerDown={e => e.preventDefault()}
-          disabled={finished || guess.length === 0}
-          onClick={handleDelete}
-        >
-          {'<'}
-        </button>
-      </div>
+      {isMobile && (
+        <div className="letter-pad">
+          {['qwertyuiop', 'asdfghjkl', 'zxcvbnm<'].map((row, ri) => (
+            <div key={ri} className={`letter-row row${ri + 1}`}>
+              {Array.from(row).map(ch =>
+                ch === '<'
+                  ? (
+                      <button
+                        key="del"
+                        onPointerDown={e => e.preventDefault()}
+                        disabled={finished || guess.length === 0}
+                        onClick={handleDelete}
+                      >
+                        {'<'}
+                      </button>
+                    )
+                  : (
+                      <button
+                        key={ch}
+                        onPointerDown={e => e.preventDefault()}
+                        disabled={finished || guess.length >= wordLen}
+                        onClick={() => handleLetter(ch)}
+                      >
+                        {ch}
+                      </button>
+                    )
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       {status && <p className="status">{status}</p>}
       <div className="history">
         {attempts.map((a, idx) => (
