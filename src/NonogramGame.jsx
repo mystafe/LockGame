@@ -215,6 +215,10 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     paintCell(r, c)
   }
 
+  const handlePointerEnter = (r, c) => {
+    if (painting) paintCell(r, c)
+  }
+
   const handlePointerMove = e => {
     if (!painting) return
     const cell = e.target.closest('td')
@@ -287,6 +291,7 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
                       className={cls}
                       onClick={() => toggleCell(r, c)}
                       onPointerDown={e => handlePointerDown(r, c, e)}
+                      onPointerEnter={() => handlePointerEnter(r, c)}
                     />
                 )
               })}
