@@ -109,6 +109,10 @@ export default function KakuroGame({ difficulty, onBack }) {
   const [notes, setNotes] = useState(
     solution.map(row => row.map(() => []))
   )
+  const [activeCell, setActiveCell] = useState(null)
+  const [errors, setErrors] = useState({})
+  const [mistakes, setMistakes] = useState(0)
+  const maxMistakes = 3
   const [startTime, setStartTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [bestTime, setBestTime] = useState(() => {
@@ -149,25 +153,51 @@ export default function KakuroGame({ difficulty, onBack }) {
         newNotes[r][c] = [...cell, num].sort((a, b) => a - b)
       }
       setNotes(newNotes)
-      // force re-render to reset input value
       setBoard(prev => prev.map(row => [...row]))
-    } else if (key === 'Backspace' || key === 'Delete') {
+      return
+    }
+
+    if (key === 'Backspace' || key === 'Delete' || key === '') {
       const next = board.map(row => [...row])
       next[r][c] = ''
-      const newNotes = notes.map(row => row.map(n => [...n]))
+      let newNotes = notes.map(row => row.map(n => [...n]))
       newNotes[r][c] = []
       setNotes(newNotes)
+      setErrors(prev => {
+        const e = { ...prev }
+        delete e[`${r}-${c}`]
+        return e
+      })
       setBoard(next)
-    } else {
-      const num = parseInt(key, 10)
-      if (!num || num < 1 || num > 9) return
-      const next = board.map(row => [...row])
-      next[r][c] = num.toString()
-      const newNotes = notes.map(row => row.map(n => [...n]))
-      newNotes[r][c] = []
-      setNotes(newNotes)
-      setBoard(next)
+      focusNextCell(r, c, next)
+      return
     }
+
+    const num = parseInt(key, 10)
+    if (!num || num < 1 || num > 9) return
+    const next = board.map(row => [...row])
+    next[r][c] = num.toString()
+    let newNotes = notes.map(row => row.map(n => [...n]))
+    newNotes[r][c] = []
+    newNotes = removeNotesForNumber(r, c, num, newNotes)
+    setNotes(newNotes)
+    setBoard(next)
+    setErrors(prev => {
+      const e = { ...prev }
+      if (num !== solution[r][c]) e[`${r}-${c}`] = true
+      else delete e[`${r}-${c}`]
+      return e
+    })
+    if (num !== solution[r][c]) {
+      const m = mistakes + 1
+      setMistakes(m)
+      if (m >= maxMistakes) {
+        alert('Kaybettiniz!')
+        onBack()
+        return
+      }
+    }
+    focusNextCell(r, c, next)
   }
 
   useEffect(() => {
@@ -234,8 +264,57 @@ export default function KakuroGame({ difficulty, onBack }) {
     )
     setNotes(newSol.map(row => row.map(() => [])))
     setHintsLeft(superMode ? Infinity : cfg.hints)
+    setErrors({})
+    setMistakes(0)
+    setActiveCell(null)
     setStartTime(Date.now())
     setElapsed(0)
+  }
+
+  const getAllowedDigits = (r, c, b = board) => {
+    if (b[r][c] !== '') return []
+    const used = new Set()
+    for (let i = 0; i < cfg.size; i++) {
+      if (b[r][i] !== '') used.add(parseInt(b[r][i], 10))
+      if (b[i][c] !== '') used.add(parseInt(b[i][c], 10))
+    }
+    return Array.from({ length: 9 }, (_, i) => i + 1).filter(d => !used.has(d))
+  }
+
+  const removeNotesForNumber = (r, c, num, baseNotes) => {
+    const updated = baseNotes.map(row => row.map(n => [...n]))
+    for (let i = 0; i < cfg.size; i++) {
+      if (i !== c) updated[r][i] = updated[r][i].filter(n => n !== num)
+      if (i !== r) updated[i][c] = updated[i][c].filter(n => n !== num)
+    }
+    return updated
+  }
+
+  const focusNextCell = (r, c, b = board) => {
+    let rr = r
+    let cc = c
+    for (let step = 0; step < cfg.size * cfg.size; step++) {
+      cc++
+      if (cc >= cfg.size) {
+        cc = 0
+        rr = (rr + 1) % cfg.size
+      }
+      const pos = `${rr}-${cc}`
+      if (!blockSet.has(pos) && !prefillSet.has(pos) && b[rr][cc] === '') {
+        const el = document.querySelector(`input[data-pos='${rr}-${cc}']`)
+        if (el) el.focus()
+        setActiveCell({ r: rr, c: cc })
+        return
+      }
+    }
+    setActiveCell(null)
+  }
+
+  const fixAllNotes = () => {
+    const newNotes = notes.map((row, r) =>
+      row.map((_, c) => getAllowedDigits(r, c))
+    )
+    setNotes(newNotes)
   }
 
   const formatTime = (s) => {
@@ -253,6 +332,7 @@ export default function KakuroGame({ difficulty, onBack }) {
         <Tooltip info="Satir ve sutun toplamina gore kareleri doldurun." tips={tricks} />
       </h1>
       <div className="info-bar">
+        <span className="errors">Hata: {mistakes}/{maxMistakes}</span>
         <span>{formatTime(elapsed)}</span>
         <span className="best">
           {bestTime !== null ? formatTime(bestTime) : '--:--'}
@@ -277,11 +357,22 @@ export default function KakuroGame({ difficulty, onBack }) {
                   return <td key={c} className="block-cell" />
                 }
                 const pre = prefillSet.has(pos)
+                const wrong = errors[pos]
                 return (
-                  <td key={c}>
+                  <td key={c} className={wrong ? 'wrong' : ''}>
                     <input
+                      data-pos={`${r}-${c}`}
                       value={val}
+                      readOnly
+                      inputMode="none"
                       disabled={pre}
+                      onFocus={() => setActiveCell({ r, c })}
+                      onBlur={e => {
+                        const next = e.relatedTarget
+                        if (!next || !next.closest('.digit-pad')) {
+                          setActiveCell(null)
+                        }
+                      }}
                       onKeyDown={e => handleChange(r, c, e.key)}
                     />
                     {val === '' && notes[r][c].length > 0 && (
@@ -311,6 +402,9 @@ export default function KakuroGame({ difficulty, onBack }) {
           >
             ✏️
           </button>
+          {superMode && (
+            <button className="icon-btn" onClick={fixAllNotes}>📝</button>
+          )}
           <button
             className="icon-btn"
             onClick={giveHint}
@@ -319,6 +413,25 @@ export default function KakuroGame({ difficulty, onBack }) {
             💡 ({superMode ? '∞' : hintsLeft})
           </button>
           <button className="icon-btn" onClick={onBack}>🏠</button>
+        </div>
+      )}
+      {activeCell && (
+        <div className="digit-pad">
+          {Array.from({ length: 9 }, (_, i) => i + 1).map(n => (
+            <button
+              key={n}
+              onPointerDown={e => e.preventDefault()}
+              onClick={() => handleChange(activeCell.r, activeCell.c, n)}
+            >
+              {n}
+            </button>
+          ))}
+          <button
+            onPointerDown={e => e.preventDefault()}
+            onClick={() => handleChange(activeCell.r, activeCell.c, '')}
+          >
+            {'<'}
+          </button>
         </div>
       )}
       {finished && <p className="status">Tebrikler!</p>}
