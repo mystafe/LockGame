@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import './Kakuro.css'
 import Tooltip from './Tooltip.jsx'
 
@@ -53,8 +53,24 @@ export default function KakuroGame({ difficulty, onBack }) {
   }
 
   const cfg = data[difficulty]
-  const blockSet = new Set(cfg.blocked.map(([r, c]) => `${r}-${c}`))
-  const prefillSet = new Set(cfg.prefilled.map(([r, c]) => `${r}-${c}`))
+  const blockSet = useMemo(
+    () => new Set(cfg.blocked.map(([r, c]) => `${r}-${c}`)),
+    [cfg]
+  )
+  const createPrefillSet = () =>
+    new Set(cfg.prefilled.map(([r, c]) => `${r}-${c}`))
+  const [prefillSet, setPrefillSet] = useState(createPrefillSet())
+
+  const createRandomSolution = () => {
+    const digits = Array.from({ length: 9 }, (_, i) => i + 1)
+    const perm = digits.slice().sort(() => Math.random() - 0.5)
+    const map = {}
+    digits.forEach((d, i) => {
+      map[d] = perm[i]
+    })
+    return cfg.solution.map(row => row.map(v => map[v]))
+  }
+  const [solution, setSolution] = useState(createRandomSolution())
 
   const computeSums = (sol) => {
     const row = sol.map((row, r) =>
@@ -72,10 +88,11 @@ export default function KakuroGame({ difficulty, onBack }) {
     return { row, col }
   }
 
-  const { row: rowSums, col: colSums } = computeSums(cfg.solution)
+  const [rowSums, setRowSums] = useState(() => computeSums(solution).row)
+  const [colSums, setColSums] = useState(() => computeSums(solution).col)
 
   const emptyBoard = () =>
-    cfg.solution.map((row, r) =>
+    solution.map((row, r) =>
       row.map((val, c) => {
         const pos = `${r}-${c}`
         if (blockSet.has(pos)) return null
@@ -86,6 +103,10 @@ export default function KakuroGame({ difficulty, onBack }) {
 
   const [board, setBoard] = useState(emptyBoard())
   const [hintsLeft, setHintsLeft] = useState(cfg.hints)
+  const [noteMode, setNoteMode] = useState(false)
+  const [notes, setNotes] = useState(
+    solution.map(row => row.map(() => []))
+  )
   const [startTime, setStartTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [bestTime, setBestTime] = useState(() => {
@@ -95,17 +116,43 @@ export default function KakuroGame({ difficulty, onBack }) {
 
   const finished = board.every((row, r) =>
     row.every((v, c) =>
-      blockSet.has(`${r}-${c}`) || parseInt(v, 10) === cfg.solution[r][c]
+      blockSet.has(`${r}-${c}`) || parseInt(v, 10) === solution[r][c]
     )
   )
 
-  const handleChange = (r, c, val) => {
+  const handleChange = (r, c, key) => {
     if (finished) return
     if (blockSet.has(`${r}-${c}`) || prefillSet.has(`${r}-${c}`)) return
-    const n = val.replace(/\D/g, '')
-    const next = board.map(row => [...row])
-    next[r][c] = n
-    setBoard(next)
+    if (noteMode) {
+      const num = parseInt(key, 10)
+      if (!num || num < 1 || num > 9) return
+      const newNotes = notes.map(row => row.map(n => [...n]))
+      const cell = newNotes[r][c]
+      if (cell.includes(num)) {
+        newNotes[r][c] = cell.filter(x => x !== num)
+      } else {
+        newNotes[r][c] = [...cell, num].sort((a, b) => a - b)
+      }
+      setNotes(newNotes)
+      // force re-render to reset input value
+      setBoard(prev => prev.map(row => [...row]))
+    } else if (key === 'Backspace' || key === 'Delete') {
+      const next = board.map(row => [...row])
+      next[r][c] = ''
+      const newNotes = notes.map(row => row.map(n => [...n]))
+      newNotes[r][c] = []
+      setNotes(newNotes)
+      setBoard(next)
+    } else {
+      const num = parseInt(key, 10)
+      if (!num || num < 1 || num > 9) return
+      const next = board.map(row => [...row])
+      next[r][c] = num.toString()
+      const newNotes = notes.map(row => row.map(n => [...n]))
+      newNotes[r][c] = []
+      setNotes(newNotes)
+      setBoard(next)
+    }
   }
 
   useEffect(() => {
@@ -141,14 +188,36 @@ export default function KakuroGame({ difficulty, onBack }) {
     if (cells.length === 0) return
     const [r, c] = cells[Math.floor(Math.random() * cells.length)]
     const next = board.map(row => [...row])
-    next[r][c] = cfg.solution[r][c].toString()
-    prefillSet.add(`${r}-${c}`)
+    next[r][c] = solution[r][c].toString()
+    const newPrefill = new Set(prefillSet)
+    newPrefill.add(`${r}-${c}`)
+    setPrefillSet(newPrefill)
+    const newNotes = notes.map(row => row.map(n => [...n]))
+    newNotes[r][c] = []
+    setNotes(newNotes)
     setBoard(next)
     setHintsLeft(hintsLeft - 1)
   }
 
   const restartGame = () => {
-    setBoard(emptyBoard())
+    const newSol = createRandomSolution()
+    setSolution(newSol)
+    const sums = computeSums(newSol)
+    setRowSums(sums.row)
+    setColSums(sums.col)
+    const pf = createPrefillSet()
+    setPrefillSet(pf)
+    setBoard(
+      newSol.map((row, r) =>
+        row.map((val, c) => {
+          const pos = `${r}-${c}`
+          if (blockSet.has(pos)) return null
+          if (pf.has(pos)) return val.toString()
+          return ''
+        })
+      )
+    )
+    setNotes(newSol.map(row => row.map(() => [])))
     setHintsLeft(cfg.hints)
     setStartTime(Date.now())
     setElapsed(0)
@@ -198,8 +267,20 @@ export default function KakuroGame({ difficulty, onBack }) {
                     <input
                       value={val}
                       disabled={pre}
-                      onChange={e => handleChange(r, c, e.target.value)}
+                      onKeyDown={e => handleChange(r, c, e.key)}
                     />
+                    {val === '' && notes[r][c].length > 0 && (
+                      <div className="note-cell readonly">
+                        {Array.from({ length: 9 }, (_, i) => i + 1).map(n => (
+                          <span
+                            key={n}
+                            className={notes[r][c].includes(n) ? 'active' : ''}
+                          >
+                            {n}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </td>
                 )
               })}
@@ -209,6 +290,12 @@ export default function KakuroGame({ difficulty, onBack }) {
       </table>
       {!finished && (
         <div className="controls">
+          <button
+            className={`icon-btn note-btn${noteMode ? ' active' : ' inactive'}`}
+            onClick={() => setNoteMode(!noteMode)}
+          >
+            ✏️
+          </button>
           <button
             className="icon-btn"
             onClick={giveHint}
