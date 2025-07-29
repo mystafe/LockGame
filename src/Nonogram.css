@@ -27,6 +27,7 @@
   background: rgba(255,255,255,0.2);
   cursor: pointer;
   position: relative;
+  user-select: none;
 }
 
 .nonogram-board td.filled {

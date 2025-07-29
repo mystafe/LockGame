@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import './WordPuzzle.css'
 import Tooltip from './Tooltip.jsx'
 
+const isMobile = /Mobi|Android/i.test(navigator.userAgent)
+
 export default function WordPuzzleGame({ onBack, superMode }) {
   const tricks = [
     'Harf dagilimini inceleyin',
@@ -208,6 +210,7 @@ export default function WordPuzzleGame({ onBack, superMode }) {
         )}
         <button className="icon-btn" onClick={onBack}>🏠</button>
       </div>
+      {isMobile && (
       <div className="letter-pad">
         {Array.from('abcdefghijklmnopqrstuvwxyz').map(ch => (
           <button
@@ -227,6 +230,7 @@ export default function WordPuzzleGame({ onBack, superMode }) {
           {'<'}
         </button>
       </div>
+      )}
       {status && <p className="status">{status}</p>}
       <div className="history">
         {attempts.map((a, idx) => (
