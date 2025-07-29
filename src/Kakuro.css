@@ -20,6 +20,7 @@
   width: 3.8rem;
   height: 3.8rem;
   text-align: center;
+  box-sizing: border-box;
   position: relative;
   color: #fff;
   text-shadow: 0 0 3px #000;
@@ -62,6 +63,14 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+}
+.controls button,
+.end-controls button {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .end-controls {
@@ -159,11 +168,6 @@
   transform: scale(0.9);
 }
 
-@media (min-width: 768px) {
-  .digit-pad {
-    display: none;
-  }
-}
 
 @media (max-width: 600px) {
   .kakuro-board th,
