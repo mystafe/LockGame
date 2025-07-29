@@ -2,3 +2,42 @@
   text-align: center;
   animation: fadein 0.5s ease-in;
 }
+
+.timer {
+  font-size: 2rem;
+  margin: 0.5rem;
+}
+
+.score-board {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.word {
+  font-size: 2rem;
+  margin: 1rem 0;
+  word-break: break-word;
+}
+
+.forbidden {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.forbidden li {
+  background: var(--block-light);
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
