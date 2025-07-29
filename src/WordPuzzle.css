@@ -20,6 +20,14 @@
   box-sizing: border-box;
 }
 
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
 @media (max-width: 600px) {
   .controls input {
     flex: 1 1 100%;

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './WordPuzzle.css'
 import Tooltip from './Tooltip.jsx'
 
@@ -10,7 +10,6 @@ export default function WordPuzzleGame({ onBack }) {
   ].sort()
 
   const words = [
-    'ak',
     'akide',
     'bilet',
     'cihan',
@@ -19,7 +18,6 @@ export default function WordPuzzleGame({ onBack }) {
     'fidan',
     'gizem',
     'hayal',
-    'is',
     'islem',
     'kuzey',
     'lamba',
@@ -34,7 +32,6 @@ export default function WordPuzzleGame({ onBack }) {
     'yolcu',
     'zengin',
     'balon',
-    'dag',
     'eller',
     'gunes',
     'hayvan',
@@ -67,7 +64,13 @@ export default function WordPuzzleGame({ onBack }) {
   })
   const wordLen = secret.length
 
+  const inputRef = useRef(null)
+
   const finished = status !== ''
+
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  }, [finished, wordLen])
 
   const handleHeaderClick = () => {
     const count = headerClicks + 1
@@ -152,15 +155,20 @@ export default function WordPuzzleGame({ onBack }) {
         <Tooltip info="Harfleri kullanarak anlamli kelimeler olusturun." tips={tricks} />
       </h1>
       <p className="word-length">
-        {Array.from({ length: wordLen }).map(() => '_').join(' ')}
+        {Array.from({ length: wordLen })
+          .map((_, i) => (guess[i] ? guess[i] : '_'))
+          .join(' ')}
       </p>
       <div className="controls">
         {!finished && (
           <>
             <input
+              ref={inputRef}
+              className="hidden-input"
               value={guess}
               onChange={e => setGuess(e.target.value.toLowerCase())}
               maxLength={wordLen}
+              autoFocus
             />
             <button onClick={handleSubmit}>Tahmin</button>
             {(superMode || hintsLeft > 0) && (

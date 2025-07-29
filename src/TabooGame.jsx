@@ -29,6 +29,16 @@ export default function TabooGame({ onBack }) {
     { word: 'televizyon', taboo: ['kumanda', 'ekran', 'kanal', 'haber', 'film'] },
     { word: 'kalabalik', taboo: ['insan', 'topluluk', 'ses', 'yogun', 'cadir'] },
     { word: 'futbol', taboo: ['top', 'gol', 'saha', 'hakem', 'takim'] },
+    { word: 'yazilim', taboo: ['kod', 'bilgisayar', 'program', 'yazmak', 'muhendis'] },
+    { word: 'market', taboo: ['alisveris', 'kasiyer', 'raf', 'sepet', 'magaza'] },
+    { word: 'egitim', taboo: ['okul', 'ogretmen', 'ders', 'ogrenci', 'sinav'] },
+    { word: 'tarih', taboo: ['gecmis', 'olay', 'kitap', 'muze', 'yil'] },
+    { word: 'saglik', taboo: ['doktor', 'hastane', 'ilac', 'hasta', 'tedavi'] },
+    { word: 'seyahat', taboo: ['gezi', 'yolculuk', 'tatil', 'otel', 'bavul'] },
+    { word: 'teknoloji', taboo: ['internet', 'cihaz', 'yeni', 'gelisim', 'akilli'] },
+    { word: 'arkadas', taboo: ['dost', 'sohbet', 'oyun', 'paylasim', 'yardim'] },
+    { word: 'sanat', taboo: ['resim', 'tiyatro', 'muzik', 'yaratici', 'sergi'] },
+    { word: 'macera', taboo: ['heyecan', 'seruven', 'film', 'risk', 'yeni'] },
   ]
 
   const [screen, setScreen] = useState('start')
@@ -122,8 +132,10 @@ export default function TabooGame({ onBack }) {
         <>
           <p className="score-board">Takim A: {scoreA} - Takim B: {scoreB}</p>
           <p>Takim A basliyor</p>
-          <button onClick={handleStart}>Basla</button>
-          <button className="icon-btn" onClick={onBack}>🏠</button>
+          <div className="menu-buttons">
+            <button onClick={handleStart}>Basla</button>
+            <button className="icon-btn" onClick={onBack}>🏠</button>
+          </div>
         </>
       )}
       {screen === 'play' && (
@@ -148,15 +160,19 @@ export default function TabooGame({ onBack }) {
         <>
           <p>Takim A skoru: {scoreA}</p>
           <p>Siradaki Takim: B</p>
-          <button onClick={handleNextTeam}>Basla</button>
-          <button className="icon-btn" onClick={onBack}>🏠</button>
+          <div className="menu-buttons">
+            <button onClick={handleNextTeam}>Basla</button>
+            <button className="icon-btn" onClick={onBack}>🏠</button>
+          </div>
         </>
       )}
       {screen === 'end' && (
         <>
           <p className="score-board">Son Skor - A: {scoreA} B: {scoreB}</p>
-          <button onClick={handleRestart}>Yeniden Oyna</button>
-          <button className="icon-btn" onClick={onBack}>🏠</button>
+          <div className="menu-buttons">
+            <button onClick={handleRestart}>Yeniden Oyna</button>
+            <button className="icon-btn" onClick={onBack}>🏠</button>
+          </div>
         </>
       )}
     </div>
