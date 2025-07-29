@@ -4,6 +4,7 @@ import SudokuGame from './SudokuGame.jsx'
 import KakuroGame from './KakuroGame.jsx'
 import TabooGame from './TabooGame.jsx'
 import WordPuzzleGame from './WordPuzzleGame.jsx'
+import NonogramGame from './NonogramGame.jsx'
 import Tooltip from './Tooltip.jsx'
 function generateSecret(length) {
   return Array.from({ length }, () => Math.floor(Math.random() * 10))
@@ -36,6 +37,7 @@ export default function App() {
   const [difficulty, setDifficulty] = useState('easy') // lock difficulty
   const [sudokuDifficulty, setSudokuDifficulty] = useState('hard')
   const [kakuroDifficulty, setKakuroDifficulty] = useState('easy')
+  const [nonogramDifficulty, setNonogramDifficulty] = useState('easy')
   const themeOptions = [
     { value: 'broken', label: 'Kırık Cam' },
     { value: 'earth', label: 'Toprak' },
@@ -104,6 +106,7 @@ export default function App() {
     } else {
       if (gameType === 'sudoku') setScreen('sudoku')
       else if (gameType === 'kakuro') setScreen('kakuro')
+      else if (gameType === 'nonogram') setScreen('nonogram')
       else if (gameType === 'taboo') setScreen('taboo')
       else if (gameType === 'word') setScreen('word')
     }
@@ -256,6 +259,7 @@ export default function App() {
               <option value="sudoku">Sudoku</option>
               <option value="lock">Lock Game</option>
               <option value="kakuro">Kakuro</option>
+              <option value="nonogram">Nonogram</option>
               <option value="taboo">Tabu</option>
               <option value="word">Kelime Bulmaca</option>
             </select>
@@ -299,6 +303,16 @@ export default function App() {
               </select>
             </div>
           )}
+          {gameType === 'nonogram' && (
+            <div>
+              <label>Zorluk: </label>
+              <select value={nonogramDifficulty} onChange={(e) => setNonogramDifficulty(e.target.value)}>
+                <option value="easy">5x5 Kolay</option>
+                <option value="medium">10x10 Orta</option>
+                <option value="hard">15x15 Zor</option>
+              </select>
+            </div>
+          )}
           <div>
             <label>Tema: </label>
             <select value={theme} onChange={(e) => setTheme(e.target.value)}>
@@ -335,6 +349,14 @@ export default function App() {
     return (
       <div className="app kakuro-app">
         <KakuroGame difficulty={kakuroDifficulty} onBack={handleRestart} />
+      </div>
+    )
+  }
+
+  if (screen === 'nonogram') {
+    return (
+      <div className="app kakuro-app">
+        <NonogramGame difficulty={nonogramDifficulty} onBack={handleRestart} />
       </div>
     )
   }
