@@ -87,7 +87,6 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     const s = localStorage.getItem(`nonogramBest-${difficulty}`)
     return s ? parseInt(s, 10) : null
   })
-  const required = cfg.solution.flat().filter(v => v === 1).length
   const maxMistakes = 3
 
   useEffect(() => {
@@ -97,6 +96,12 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     }, 1000)
     return () => clearInterval(id)
   }, [startTime, finished])
+
+  useEffect(() => {
+    const handleUp = () => setPainting(false)
+    window.addEventListener('pointerup', handleUp)
+    return () => window.removeEventListener('pointerup', handleUp)
+  }, [])
 
   useEffect(() => {
     if (finished) {
@@ -113,7 +118,10 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     const next = board.map(row => [...row])
     next[r][c] = val
     const e = { ...errors }
-    if ((val === 1 && cfg.solution[r][c] !== 1) || (val !== 1 && cfg.solution[r][c] === 1 && val !== 0)) {
+    if (
+      (val === 1 && cfg.solution[r][c] !== 1) ||
+      (val !== 1 && cfg.solution[r][c] === 1 && val !== 0)
+    ) {
       e[`${r}-${c}`] = true
       const m = mistakes + 1
       setMistakes(m)
@@ -126,8 +134,13 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     }
     setErrors(e)
     setBoard(next)
-    const filled = next.flat().filter(v => v === 1).length
-    if (filled === required) check()
+    const solved = next.every((row, rr) =>
+      row.every((v, cc) => (v === 1 ? 1 : 0) === cfg.solution[rr][cc])
+    )
+    if (solved) {
+      setFinished(true)
+      setStatus('Tebrikler!')
+    }
   }
 
   const toggleCell = (r, c) => {
@@ -150,22 +163,6 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     }
   }
 
-  function check() {
-    const errs = {}
-    for (let r = 0; r < cfg.size; r++) {
-      for (let c = 0; c < cfg.size; c++) {
-        const val = board[r][c] === 1 ? 1 : 0
-        if (val !== cfg.solution[r][c]) {
-          errs[`${r}-${c}`] = true
-        }
-      }
-    }
-    setErrors(errs)
-    if (Object.keys(errs).length === 0) {
-      setFinished(true)
-      setStatus('Tebrikler!')
-    }
-  }
 
   const giveHint = () => {
     if (finished || (!superMode && hintsLeft <= 0)) return
@@ -181,13 +178,19 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     if (!superMode) setHintsLeft(hintsLeft - 1)
   }
 
-  const handlePointerDown = (r, c) => {
+  const handlePointerDown = (r, c, e) => {
+    e.preventDefault()
     setPainting(true)
     paintCell(r, c)
   }
 
-  const handlePointerEnter = (r, c) => {
-    if (painting) paintCell(r, c)
+  const handlePointerMove = e => {
+    if (!painting) return
+    const cell = e.target.closest('td')
+    if (!cell) return
+    const r = parseInt(cell.dataset.r, 10)
+    const c = parseInt(cell.dataset.c, 10)
+    if (!Number.isNaN(r) && !Number.isNaN(c)) paintCell(r, c)
   }
 
   const handlePointerUp = () => setPainting(false)
@@ -208,14 +211,14 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     <div className="nonogram">
       <h1>
         Nonogram
-        <Tooltip info="Satir ve sutun ipuclarina gore kareleri doldurun." tips={['Parcalar arasinda en az bir bosluk birakir','X ile bos kareleri isaretleyin','Hepsini doldurunca Kontrol butonunu kullanin']} />
+        <Tooltip info="Satir ve sutun ipuclarina gore kareleri doldurun." tips={['Parcalar arasinda en az bir bosluk birakir','X ile bos kareleri isaretleyin','T\u00fcm kareler dogruysa otomatik tamamlanir']} />
       </h1>
       <div className="info-bar">
         <span className="errors">Hata: {mistakes}/{maxMistakes}</span>
         <span>{`${Math.floor(elapsed / 60)}`.padStart(2, '0')}:{`${elapsed % 60}`.padStart(2, '0')}</span>
         <span className="best">{bestTime !== null ? `${Math.floor(bestTime / 60)}`.padStart(2, '0') + ':' + `${bestTime % 60}`.padStart(2, '0') : '--:--'}</span>
       </div>
-      <table className="nonogram-board" onPointerUp={handlePointerUp}>
+      <table className="nonogram-board" onPointerUp={handlePointerUp} onPointerMove={handlePointerMove}>
         <thead>
           <tr>
             <th></th>
@@ -240,13 +243,14 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
                   errors[`${r}-${c}`] ? 'error' : ''
                 ].join(' ').trim()
                 return (
-                  <td
-                    key={c}
-                    className={cls}
-                    onClick={() => toggleCell(r, c)}
-                    onPointerDown={() => handlePointerDown(r, c)}
-                    onPointerEnter={() => handlePointerEnter(r, c)}
-                  />
+                    <td
+                      key={c}
+                      data-r={r}
+                      data-c={c}
+                      className={cls}
+                      onClick={() => toggleCell(r, c)}
+                      onPointerDown={e => handlePointerDown(r, c, e)}
+                    />
                 )
               })}
             </tr>
@@ -267,7 +271,6 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
             💡 <span className="hint-count">({superMode ? '∞' : hintsLeft})</span>
           </button>
         )}
-        {!finished && <button onClick={check}>Kontrol</button>}
         {finished && <button className="icon-btn" onClick={restart}>🔄</button>}
         <button className="icon-btn" onClick={onBack}>🏠</button>
       </div>

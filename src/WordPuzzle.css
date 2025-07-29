@@ -33,11 +33,20 @@
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
   border-radius: 10px;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 0.25rem;
   padding: 0.5rem;
 }
+
+.letter-row {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.letter-row.row1 { grid-template-columns: repeat(10, 1fr); }
+.letter-row.row2 { grid-template-columns: repeat(9, 1fr); }
+.letter-row.row3 { grid-template-columns: repeat(8, 1fr); }
 
 .letter-pad button {
   width: 100%;
