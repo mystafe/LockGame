@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import './Nonogram.css'
 import Tooltip from './Tooltip.jsx'
 
@@ -65,14 +65,32 @@ function getHints(line) {
   return res
 }
 
+function generateSolution(size) {
+  return Array.from({ length: size }, () =>
+    Array.from({ length: size }, () => (Math.random() > 0.5 ? 1 : 0))
+  )
+}
+
 export default function NonogramGame({ difficulty, onBack, superMode }) {
   const cfg = data[difficulty]
-  const rowHints = cfg.solution.map(getHints)
-  const colHints = cfg.solution[0].map((_, c) =>
-    getHints(cfg.solution.map(row => row[c]))
+
+  const createPuzzle = useCallback(() => {
+    const solution = generateSolution(cfg.size)
+    return {
+      solution,
+      rowHints: solution.map(getHints),
+      colHints: solution[0].map((_, c) =>
+        getHints(solution.map(row => row[c]))
+      ),
+    }
+  }, [cfg.size])
+
+  const [puzzle, setPuzzle] = useState(createPuzzle)
+  const { solution, rowHints, colHints } = puzzle
+  const emptyBoard = useCallback(
+    () => Array.from({ length: cfg.size }, () => Array(cfg.size).fill(0)),
+    [cfg.size]
   )
-  const emptyBoard = () =>
-    Array.from({ length: cfg.size }, () => Array(cfg.size).fill(0))
   const [board, setBoard] = useState(emptyBoard())
   const [finished, setFinished] = useState(false)
   const [hintsLeft, setHintsLeft] = useState(superMode ? Infinity : 3)
@@ -114,13 +132,26 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     }
   }, [finished, bestTime, difficulty, startTime])
 
+  useEffect(() => {
+    setPuzzle(createPuzzle())
+    setBoard(emptyBoard())
+    setFinished(false)
+    setHintsLeft(superMode ? Infinity : 3)
+    setErrors({})
+    setCrossMode(false)
+    setMistakes(0)
+    setStatus('')
+    setStartTime(Date.now())
+    setElapsed(0)
+  }, [difficulty, createPuzzle, emptyBoard, superMode])
+
   const applyValue = (r, c, val) => {
     const next = board.map(row => [...row])
     next[r][c] = val
     const e = { ...errors }
     if (
-      (val === 1 && cfg.solution[r][c] !== 1) ||
-      (val !== 1 && cfg.solution[r][c] === 1 && val !== 0)
+      (val === 1 && solution[r][c] !== 1) ||
+      (val !== 1 && solution[r][c] === 1 && val !== 0)
     ) {
       e[`${r}-${c}`] = true
       const m = mistakes + 1
@@ -135,7 +166,7 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     setErrors(e)
     setBoard(next)
     const solved = next.every((row, rr) =>
-      row.every((v, cc) => (v === 1 ? 1 : 0) === cfg.solution[rr][cc])
+      row.every((v, cc) => (v === 1 ? 1 : 0) === solution[rr][cc])
     )
     if (solved) {
       setFinished(true)
@@ -169,7 +200,7 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
     const cells = []
     for (let r = 0; r < cfg.size; r++) {
       for (let c = 0; c < cfg.size; c++) {
-        if (cfg.solution[r][c] === 1 && board[r][c] !== 1) cells.push([r, c])
+        if (solution[r][c] === 1 && board[r][c] !== 1) cells.push([r, c])
       }
     }
     if (cells.length === 0) return
@@ -196,6 +227,7 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
   const handlePointerUp = () => setPainting(false)
 
   const restart = () => {
+    setPuzzle(createPuzzle())
     setBoard(emptyBoard())
     setFinished(false)
     setHintsLeft(superMode ? Infinity : 3)
@@ -218,7 +250,12 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
         <span>{`${Math.floor(elapsed / 60)}`.padStart(2, '0')}:{`${elapsed % 60}`.padStart(2, '0')}</span>
         <span className="best">{bestTime !== null ? `${Math.floor(bestTime / 60)}`.padStart(2, '0') + ':' + `${bestTime % 60}`.padStart(2, '0') : '--:--'}</span>
       </div>
-      <table className="nonogram-board" onPointerUp={handlePointerUp} onPointerMove={handlePointerMove}>
+      <table
+        className="nonogram-board"
+        style={{ '--board-size': cfg.size }}
+        onPointerUp={handlePointerUp}
+        onPointerMove={handlePointerMove}
+      >
         <thead>
           <tr>
             <th></th>

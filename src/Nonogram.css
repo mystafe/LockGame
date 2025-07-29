@@ -11,8 +11,8 @@
 .nonogram-board th,
 .nonogram-board td {
   border: 1px solid #333;
-  width: 2rem;
-  height: 2rem;
+  width: calc(min(2rem, 90vw / (var(--board-size) + 2)));
+  height: calc(min(2rem, 90vw / (var(--board-size) + 2)));
   text-align: center;
   color: #fff;
   text-shadow: 0 0 3px #000;
