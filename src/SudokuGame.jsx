@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+
+const isMobile = /Mobi|Android/i.test(navigator.userAgent)
 import './Sudoku.css'
 import Tooltip from './Tooltip.jsx'
 
@@ -356,7 +358,7 @@ export default function SudokuGame({ difficulty, onBack, superMode }) {
                       value={cell === 0 ? '' : cell}
                       readOnly
                       disabled={rand.puzzle[r][c] !== 0}
-                      inputMode="none"
+                      inputMode={isMobile ? 'none' : undefined}
                       onFocus={() => setActiveCell({ r, c })}
                       onBlur={e => {
                         const next = e.relatedTarget
@@ -413,7 +415,7 @@ export default function SudokuGame({ difficulty, onBack, superMode }) {
           <button className="icon-btn" onClick={onBack}>🏠</button>
         </div>
       )}
-      {!finished && (
+      {!finished && isMobile && (
         <div className="digit-pad">
           {(() => {
             const allowed = activeCell ? getAllowedDigits(activeCell.r, activeCell.c) : []
