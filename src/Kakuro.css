@@ -3,6 +3,12 @@
   animation: fadein 0.5s ease-in;
 }
 
+.kakuro h1 {
+  margin: 0.1rem 0;
+  font-size: 1.4rem;
+  word-break: break-word;
+}
+
 .kakuro-board {
   margin: 0 auto;
   border-collapse: collapse;
@@ -119,6 +125,44 @@
 .note-btn.inactive {
   opacity: 0.6;
   background: transparent;
+}
+
+.wrong input {
+  color: #e53935;
+  -webkit-text-fill-color: #e53935;
+}
+
+.digit-pad {
+  margin-top: 0.5rem;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+.digit-pad button {
+  width: 100%;
+  height: 3rem;
+  transition: transform 0.2s;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+.digit-pad button:disabled {
+  opacity: 0.5;
+}
+.digit-pad button:active {
+  transform: scale(0.9);
+}
+
+@media (min-width: 768px) {
+  .digit-pad {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
