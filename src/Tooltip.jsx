@@ -13,11 +13,11 @@ export default function Tooltip({ info, tips = [] }) {
           <div className="info-content">
             <p>{info}</p>
             {sorted.length > 0 && (
-              <ul className="info-tips">
+              <ol className="info-tips">
                 {sorted.map((t, i) => (
                   <li key={i}>{t}</li>
                 ))}
-              </ul>
+              </ol>
             )}
             <p className="close-hint">Kapatmak için tıklayın</p>
           </div>

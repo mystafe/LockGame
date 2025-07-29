@@ -10,6 +10,7 @@ export default function WordPuzzleGame({ onBack }) {
   ].sort()
 
   const words = [
+    'ak',
     'akide',
     'bilet',
     'cihan',
@@ -18,6 +19,7 @@ export default function WordPuzzleGame({ onBack }) {
     'fidan',
     'gizem',
     'hayal',
+    'is',
     'islem',
     'kuzey',
     'lamba',
@@ -30,6 +32,24 @@ export default function WordPuzzleGame({ onBack }) {
     'tatil',
     'vagon',
     'yolcu',
+    'zengin',
+    'balon',
+    'dag',
+    'eller',
+    'gunes',
+    'hayvan',
+    'iyilik',
+    'kalem',
+    'limon',
+    'mektup',
+    'ormanlar',
+    'piramit',
+    'renk',
+    'sarmasik',
+    'toprak',
+    'uzay',
+    'yildiz',
+    'zaman',
   ]
 
   const randomWord = () => words[Math.floor(Math.random() * words.length)]
@@ -131,6 +151,9 @@ export default function WordPuzzleGame({ onBack }) {
         Kelime Bulmaca
         <Tooltip info="Harfleri kullanarak anlamli kelimeler olusturun." tips={tricks} />
       </h1>
+      <p className="word-length">
+        {Array.from({ length: wordLen }).map(() => '_').join(' ')}
+      </p>
       <div className="controls">
         {!finished && (
           <>

@@ -20,6 +20,15 @@ export default function TabooGame({ onBack }) {
     { word: 'araba', taboo: ['teker', 'motor', 'yol', 'surmek', 'direksiyon'] },
     { word: 'ucak', taboo: ['kanat', 'havalimani', 'pilot', 'yolcu', 'hostes'] },
     { word: 'bisiklet', taboo: ['pedal', 'teker', 'yol', 'spor', 'surmek'] },
+    { word: 'telefon', taboo: ['arama', 'mesaj', 'rehber', 'cep', 'mobil'] },
+    { word: 'dag', taboo: ['zirve', 'yuksek', 'kar', 'kaya', 'tirmanis'] },
+    { word: 'cicek', taboo: ['bitki', 'renk', 'kok', 'bahce', 'dal'] },
+    { word: 'kirmizi', taboo: ['renk', 'kan', 'guller', 'bayrak', 'ates'] },
+    { word: 'sandalye', taboo: ['oturmak', 'masa', 'ayak', 'sirt', 'tahta'] },
+    { word: 'buzdolabi', taboo: ['soguk', 'yemek', 'mutfak', 'raf', 'kapi'] },
+    { word: 'televizyon', taboo: ['kumanda', 'ekran', 'kanal', 'haber', 'film'] },
+    { word: 'kalabalik', taboo: ['insan', 'topluluk', 'ses', 'yogun', 'cadir'] },
+    { word: 'futbol', taboo: ['top', 'gol', 'saha', 'hakem', 'takim'] },
   ]
 
   const [screen, setScreen] = useState('start')
@@ -131,6 +140,7 @@ export default function TabooGame({ onBack }) {
             <button onClick={handlePass}>Pas</button>
             <button onClick={handleCorrect}>Dogru</button>
             <button onClick={handleTaboo}>Tabu</button>
+            <button className="icon-btn" onClick={onBack}>🏠</button>
           </div>
         </>
       )}

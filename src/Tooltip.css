@@ -24,8 +24,8 @@
 }
 
 .info-tips {
-  list-style: none;
-  padding: 0;
+  list-style: decimal inside;
+  padding-left: 0.5rem;
   margin-top: 0.5rem;
   font-size: 0.85rem;
   font-style: italic;
@@ -33,6 +33,12 @@
 
 .info-tips li + li {
   margin-top: 0.25rem;
+}
+
+@media (max-width: 600px) {
+  .info-tips {
+    padding-left: 1rem;
+  }
 }
 
 .close-hint {

@@ -63,6 +63,9 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }
 .controls button,
 .end-controls button {
@@ -78,6 +81,9 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }
 
 .status {
