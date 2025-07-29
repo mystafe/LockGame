@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import './Kakuro.css'
 import Tooltip from './Tooltip.jsx'
 
-export default function KakuroGame({ difficulty, onBack }) {
+export default function KakuroGame({ difficulty, onBack, superMode }) {
   const tricks = [
     'Ayni satirda tekrar etmeyin',
     'Kombinasyonlari ogrenin',
@@ -102,9 +102,8 @@ export default function KakuroGame({ difficulty, onBack }) {
     )
 
   const [board, setBoard] = useState(emptyBoard())
-  const [hintsLeft, setHintsLeft] = useState(cfg.hints)
-  const [superMode, setSuperMode] = useState(false)
-  const [headerClicks, setHeaderClicks] = useState(0)
+  const [hintsLeft, setHintsLeft] = useState(superMode ? Infinity : cfg.hints)
+  // superMode prop controls unlimited hints
   const [noteMode, setNoteMode] = useState(false)
   const [notes, setNotes] = useState(
     solution.map(row => row.map(() => []))
@@ -126,18 +125,6 @@ export default function KakuroGame({ difficulty, onBack }) {
     )
   )
 
-  const handleHeaderClick = () => {
-    const count = headerClicks + 1
-    if (count >= 5) {
-      if (!superMode) {
-        setSuperMode(true)
-        setHintsLeft(Infinity)
-      }
-      setHeaderClicks(0)
-    } else {
-      setHeaderClicks(count)
-    }
-  }
 
   const handleChange = (r, c, key) => {
     if (finished) return
@@ -327,7 +314,7 @@ export default function KakuroGame({ difficulty, onBack }) {
 
   return (
     <div className="kakuro">
-      <h1 onClick={handleHeaderClick}>
+      <h1>
         Kakuro
         <Tooltip info="Satir ve sutun toplamina gore kareleri doldurun." tips={tricks} />
       </h1>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './WordPuzzle.css'
 import Tooltip from './Tooltip.jsx'
 
-export default function WordPuzzleGame({ onBack }) {
+export default function WordPuzzleGame({ onBack, superMode }) {
   const tricks = [
     'Harf dagilimini inceleyin',
     'Kelimeleri capraz kontrol edin',
@@ -73,9 +73,7 @@ export default function WordPuzzleGame({ onBack }) {
   const [secret, setSecret] = useState(randomWord)
   const [guess, setGuess] = useState('')
   const [attempts, setAttempts] = useState([])
-  const [hintsLeft, setHintsLeft] = useState(1)
-  const [superMode, setSuperMode] = useState(false)
-  const [headerClicks, setHeaderClicks] = useState(0)
+  const [hintsLeft, setHintsLeft] = useState(superMode ? Infinity : 1)
   const [status, setStatus] = useState('')
   const [bestScore, setBestScore] = useState(() => {
     const s = localStorage.getItem('wordBest')
@@ -101,18 +99,6 @@ export default function WordPuzzleGame({ onBack }) {
     return () => window.removeEventListener('keydown', handleKey)
   }, [finished, wordLen])
 
-  const handleHeaderClick = () => {
-    const count = headerClicks + 1
-    if (count >= 5) {
-      if (!superMode) {
-        setSuperMode(true)
-        setHintsLeft(Infinity)
-      }
-      setHeaderClicks(0)
-    } else {
-      setHeaderClicks(count)
-    }
-  }
 
   const evaluateColors = (g) => {
     const res = Array(wordLen).fill('gray')
@@ -196,7 +182,7 @@ export default function WordPuzzleGame({ onBack }) {
 
   return (
     <div className="word-puzzle">
-      <h1 onClick={handleHeaderClick}>
+      <h1>
         Kelime Bulmaca
         <Tooltip info="Harfleri kullanarak anlamli kelimeler olusturun." tips={tricks} />
       </h1>

@@ -4,8 +4,9 @@ Bu proje React ile geliştirilmiş bir mini oyun setidir. Sayısal kilit, Sudoku
 Her oyunda başlık yanında bir **bilgi** simgesi bulunur. Bu simgeye tıkladığınızda yarı saydam tam ekran bir açıklama belirir. Açıklama penceresinde oyunun kuralları ve küçük hileler alfabetik sırayla listelenir. Yazılar daha küçük puntoda ve ipuçları italik olarak gösterilir. Açılan ekranın herhangi bir yerine tıklayarak kapatabilirsiniz.
 
 Sudoku oyununda üç zorluk seviyesi bulunur. Kolay seviyede 5x5 karelik mini bir Sudoku sunulur ve üç ipucu verilir. Orta seviyede 9x9 standart Sudoku daha fazla açık sayıyla gelir ve yine üç ipucu sağlanır. Zor seviyede 9x9 Sudoku daha az açık sayı içerir, üç yanılma hakkı ve tek ipucu vardır.
+Nonogram bulmacası da üç farklı boyutta oynanabilir. 5x5, 10x10 ve 15x15 tablolar için satır ve sütun ipuçları gösterilir. Karelere tıklayarak boyayabilir ya da boş bırakabilirsiniz; bu oyunda sanal klavye görünmez. Üç ipucu kullanılabilir ve tamamladığınız en iyi süre kaydedilir.
 
-Her oyunda başlığa art arda beş kez tıklarsanız **Süper Mod** aktif olur ve ipucu hakkı sınırsız hale gelir. Sudoku'da bu mod ayrıca notları otomatik düzeltme düğmesini gösterir.
+Süper moda geçmek için ana ekrandaki oyun ismine art arda beş kez tıklamanız yeterlidir. Bu modda ipucu limiti kalkar ve Nonogram için sınırsız ipucu verilir. Sudoku'da ayrıca notları otomatik düzeltme düğmesi görünür.
 
 Her tahmin sonrası sonuçlar renklerle gösterilir:
 
