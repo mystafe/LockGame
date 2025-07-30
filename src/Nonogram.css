@@ -6,6 +6,7 @@
 .nonogram-board {
   margin: 0 auto;
   border-collapse: collapse;
+  touch-action: none;
 }
 
 .nonogram-board th,
