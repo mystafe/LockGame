@@ -212,7 +212,7 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
   const handlePointerDown = (r, c, e) => {
     e.preventDefault()
     setPainting(true)
-    paintCell(r, c)
+    toggleCell(r, c)
   }
 
   const handlePointerMove = e => {
@@ -285,7 +285,6 @@ export default function NonogramGame({ difficulty, onBack, superMode }) {
                       data-r={r}
                       data-c={c}
                       className={cls}
-                      onClick={() => toggleCell(r, c)}
                       onPointerDown={e => handlePointerDown(r, c, e)}
                     />
                 )
